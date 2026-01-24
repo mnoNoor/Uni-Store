@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getAllBooks,
+  getOneBook,
   createBook,
   editBook,
   deleteBook,
@@ -8,6 +9,7 @@ import {
 const router = express.Router();
 
 router.get("/", getAllBooks);
+router.get("/:id", getOneBook);
 router.post("/", createBook);
 router.put("/:id", editBook);
 router.delete("/:id", deleteBook);
