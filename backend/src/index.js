@@ -1,10 +1,10 @@
 import express from "express";
+import cors from "cors";
 import booksRoutes from "./routes/booksRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
-import { connectDB } from "./config/db.js";
 import rateLimit from "./middlewares/rateLimiter.js";
 import errorHandler from "./middlewares/errorHandler.js";
-import cors from "cors";
+import { connectDB } from "./config/db.js";
 
 const app = express();
 

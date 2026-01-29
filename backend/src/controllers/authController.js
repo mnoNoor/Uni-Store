@@ -1,10 +1,11 @@
-import User from "../models/User";
-import { generateTokenAndSetCookie } from "../utils/setCookie";
+import bcrypt from "bcryptjs";
+import User from "../models/User.js";
+import { generateTokenAndSetCookie } from "../utils/setCookie.js";
 
 export async function signup(req, res) {
   const { username, email, password } = req.body;
 
-  if (!username.trim() || !email.trim() || !password.trim()) {
+  if (!username?.trim() || !email?.trim() || !password?.trim()) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -13,11 +14,13 @@ export async function signup(req, res) {
     return res.status(409).json({ message: "User already exists" });
   }
 
+  const verifyToken = Math.floor(100000 + Math.random() * 900000).toString();
+
   const user = new User({
     username: username.trim(),
     email: email.trim().toLowerCase(),
     password: password.trim(),
-    verifyToken: null,
+    verifyToken,
     verifyTokenExp: Date.now() + 60 * 60 * 24 * 1000, // 24 hours
   });
 
@@ -29,9 +32,40 @@ export async function signup(req, res) {
 }
 
 export async function login(req, res) {
-  await res.status(200).send("Login controller");
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res;
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+
+  const user = await User.findOne({ email: email.toLowerCase() }).select(
+    "+password",
+  );
+
+  if (!user) {
+    return res
+      .status(401)
+      .json({ message: "you don't have an account, please sign in" });
+  }
+
+  const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordCorrect) {
+    return res
+      .status(401)
+      .json({ message: "Password in incorrect. please try again" });
+  }
+
+  generateTokenAndSetCookie(res, user._id);
+
+  user.lastLogin = new Date();
+  await user.save();
+
+  res.status(200).json({ message: "User logged in successfully" });
 }
 
 export async function logout(req, res) {
-  await res.status(200).send("Logout controller");
+  await res.clearCookie("token");
+  res.status(200).json({ message: "User logged out successfully" });
 }
