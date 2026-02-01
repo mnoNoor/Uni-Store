@@ -1,8 +1,8 @@
 import ratelimit from "../config/upstash.js";
 
-const rateLimit = async (_, res, next) => {
+const rateLimit = async (req, res, next) => {
   try {
-    const { success } = await ratelimit.limit("global");
+    const { success } = await ratelimit.limit(req.cookies.token);
 
     if (!success) {
       return res
@@ -11,9 +11,7 @@ const rateLimit = async (_, res, next) => {
     }
     next();
   } catch (error) {
-    console.error("Rate limiting error:", error);
-    res.status(500).json({ message: "Internal server error" });
-    return;
+    next(error);
   }
 };
 

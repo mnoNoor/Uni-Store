@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 
 import Header from "../layout/Header";
@@ -7,43 +7,133 @@ import NavBar from "../layout/NavBar";
 import ProductCard from "../layout/BookCard";
 import RateLimitedUI from "../components/RateLimitedUI";
 import Footer from "../layout/Footer";
+import LoadingSkeleton from "../components/LoadingSkeleton";
 
 export default function Home() {
   const [isRateLimited, setIsRateLimited] = useState(false);
   const [loading, setLoading] = useState(true);
   const [books, setBooks] = useState([]);
+  const [query, setQuery] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
+  const [error, setError] = useState(null);
+
   useEffect(() => {
+    let mounted = true;
     const fetchBooks = async () => {
       try {
+        setLoading(true);
         const res = await axios.get("http://localhost:5000/api/books");
+        if (!mounted) return;
         setBooks(res.data);
-      } catch (error) {
-        if (error.response?.status === 429) {
+      } catch (err) {
+        if (err.response?.status === 429) {
           setIsRateLimited(true);
-          return;
         } else {
-          console.error("Error fetching books:", error);
+          console.error("Error fetching books:", err);
+          setError("Could not load books. Try again later.");
         }
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
     fetchBooks();
+    return () => {
+      mounted = false;
+    };
   }, []);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    let list = books.filter(
+      (b) =>
+        b.title.toLowerCase().includes(q) ||
+        b.description.toLowerCase().includes(q) ||
+        (b.author || "").toLowerCase().includes(q),
+    );
+    if (sortBy === "price-asc") list = list.sort((a, b) => a.price - b.price);
+    if (sortBy === "price-desc") list = list.sort((a, b) => b.price - a.price);
+    if (sortBy === "newest")
+      list = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    return list;
+  }, [books, query, sortBy]);
+
   return (
-    <div>
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       <NavBar />
-      <AddBookButton />
-      {loading && <p className="p-4 flex justify-center">Loading books...</p>}
-      {!loading && isRateLimited && <RateLimitedUI />}
-      {!loading && !isRateLimited && (
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-          {books.map((book) => (
-            <ProductCard key={book._id} book={book} setBooks={setBooks} />
-          ))}
+      <main className="container mx-auto flex-1 px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="w-full max-w-lg">
+            <label htmlFor="search" className="sr-only">
+              Search books
+            </label>
+            <div className="relative">
+              <input
+                id="search"
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search title, author or description..."
+                className="w-full pl-4 pr-10 py-2 rounded-md border focus:outline-none focus:ring focus:border-green-300"
+              />
+              <span className="absolute right-3 top-2 text-sm text-gray-400">
+                ⌘K
+              </span>
+            </div>
+          </div>
+
+          <div className="ml-4 flex items-center space-x-2">
+            <label htmlFor="sort" className="text-sm text-gray-600">
+              Sort
+            </label>
+            <select
+              id="sort"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="py-2 px-3 border rounded-md bg-white"
+            >
+              <option value="newest">Newest</option>
+              <option value="price-asc">Price: Low → High</option>
+              <option value="price-desc">Price: High → Low</option>
+            </select>
+          </div>
         </div>
-      )}
+
+        {loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <LoadingSkeleton key={i} />
+            ))}
+          </div>
+        )}
+
+        {!loading && isRateLimited && <RateLimitedUI />}
+
+        {!loading && !isRateLimited && error && (
+          <div className="p-6 bg-red-50 border border-red-100 rounded text-red-700">
+            {error}
+          </div>
+        )}
+
+        {!loading && !isRateLimited && !error && filtered.length === 0 && (
+          <div className="p-8 bg-white rounded shadow text-center">
+            <h3 className="text-lg font-semibold mb-2">No books found</h3>
+            <p className="text-sm text-gray-600">
+              Try adjusting your search or add a new book.
+            </p>
+          </div>
+        )}
+
+        {!loading && !isRateLimited && !error && filtered.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filtered.map((book) => (
+              <ProductCard key={book._id} book={book} setBooks={setBooks} />
+            ))}
+          </div>
+        )}
+      </main>
+
+      <AddBookButton />
       <Footer />
     </div>
   );

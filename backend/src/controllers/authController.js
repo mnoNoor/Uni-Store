@@ -69,3 +69,11 @@ export async function logout(req, res) {
   await res.clearCookie("token");
   res.status(200).json({ message: "User logged out successfully" });
 }
+
+export async function userAuth(req, res) {
+  const user = await User.findById(req.userId);
+
+  if (!user) return res.status(401).json({ message: "User not found" });
+
+  res.status(200).json({ user });
+}

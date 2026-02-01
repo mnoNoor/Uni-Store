@@ -8,7 +8,7 @@ import RateLimitedUI from "../components/RateLimitedUI";
 import instance from "../lib/axios";
 
 export default function AddBook() {
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [section, setSection] = useState(""); /*male, female, both*/
@@ -20,31 +20,28 @@ export default function AddBook() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !image.trim() ||
-      !title.trim() ||
-      !description.trim() ||
-      !section.trim() ||
-      !price
-    ) {
+    if (!image || !title || !description || !section || !price) {
       toast.error("All fields are required");
       return;
     }
     setLoading(true);
 
     try {
-      await instance.post("/books", {
-        image,
-        title,
-        description,
-        section,
-        price,
+      const formData = new FormData();
+      formData.append("image", image);
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("section", section);
+      formData.append("price", price);
+
+      await instance.post("/books", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
       toast.success("Book added successfully");
       navigate("/");
     } catch (error) {
       console.error("Error adding book:", error);
-      if (error.response.status === 429) {
+      if (error.response?.status === 429) {
         toast.error("slow down, too many requests.");
         setIsRateLimited(true);
         return;
@@ -71,9 +68,9 @@ export default function AddBook() {
             <div>
               <label className="block mb-1 font-semibold">Image URL</label>
               <input
-                type="text"
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
+                type="file"
+                accept="image/*"
+                onChange={(e) => setImage(e.target.files[0])}
                 className="w-full border border-gray-300 p-2 rounded"
               />
             </div>
@@ -94,14 +91,22 @@ export default function AddBook() {
                 className="w-full border border-gray-300 p-2 rounded"
               />
             </div>
-            <div>
-              <label className="block mb-1 font-semibold">Section</label>
-              <input
-                type="text"
-                value={section}
-                onChange={(e) => setSection(e.target.value)}
-                className="w-full border border-gray-300 p-2 rounded"
-              />
+            <label className="block mb-2 font-semibold">Section</label>
+            <div className="flex gap-2">
+              {["male", "female", "both"].map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setSection(value)}
+                  className={`px-4 py-2 rounded border font-medium ${
+                    section === value
+                      ? "bg-green-500 text-white border-green-500"
+                      : "bg-white border-gray-300 hover:bg-gray-100"
+                  }`}
+                >
+                  {value.charAt(0).toUpperCase() + value.slice(1)}
+                </button>
+              ))}
             </div>
             <div>
               <label className="block mb-1 font-semibold">Price</label>

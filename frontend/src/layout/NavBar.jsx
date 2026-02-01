@@ -1,30 +1,53 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export default function NavBar() {
+  const base = "px-3 py-2 rounded-md text-sm";
   return (
-    <nav className="bg-white p-4">
-      <ul className="flex space-x-4 justify-center">
-        <li>
-          <Link to="/" className="hover:underline">
-            Home
-          </Link>
-        </li>
-        <li>
-          <Link to="/products" className="hover:underline">
-            Products
-          </Link>
-        </li>
-        <li>
-          <Link to="/about" className="hover:underline">
-            About
-          </Link>
-        </li>
-        <li>
-          <Link to="/contact" className="hover:underline">
-            Contact
-          </Link>
-        </li>
-      </ul>
+    <nav className="bg-white shadow-sm">
+      <div className="container mx-auto px-4">
+        <ul className="flex space-x-4 justify-center py-3">
+          <li>
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `${base} ${isActive ? "bg-green-50 text-green-700" : "text-gray-700 hover:text-green-600"}`
+              }
+            >
+              Home
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/products"
+              className={({ isActive }) =>
+                `${base} ${isActive ? "bg-green-50 text-green-700" : "text-gray-700 hover:text-green-600"}`
+              }
+            >
+              Products
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                `${base} ${isActive ? "bg-green-50 text-green-700" : "text-gray-700 hover:text-green-600"}`
+              }
+            >
+              About
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/contact"
+              className={({ isActive }) =>
+                `${base} ${isActive ? "bg-green-50 text-green-700" : "text-gray-700 hover:text-green-600"}`
+              }
+            >
+              Contact
+            </NavLink>
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 }

@@ -11,12 +11,14 @@ const bookSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    imagePublicId: { type: String },
     description: {
       type: String,
       required: true,
     },
     section: {
       type: String,
+      enum: ["male", "female", "both"],
       required: true,
     },
     price: {

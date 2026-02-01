@@ -5,9 +5,11 @@ import authRoutes from "./routes/authRoutes.js";
 import rateLimit from "./middlewares/rateLimiter.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { connectDB } from "./config/db.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
+app.use(cookieParser());
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use(rateLimit);
