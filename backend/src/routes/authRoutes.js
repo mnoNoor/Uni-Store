@@ -9,12 +9,13 @@ import asyncHandler from "../utils/asyncHandler.js";
 import { authMiddleware } from "../middlewares/auth.js";
 import { validate } from "../middlewares/validation.js";
 import { validateUserSchema } from "../validators/userValidator.js";
+import { signUpUserValidator } from "../validators/signUpUserValidator.js";
 
 const router = express.Router();
 
 router.get("/user-auth", authMiddleware, asyncHandler(userAuth));
 router.post("/login", validate(validateUserSchema), asyncHandler(login));
-router.post("/signup", asyncHandler(signup));
+router.post("/signup", validate(signUpUserValidator), asyncHandler(signup));
 router.post("/logout", asyncHandler(logout));
 
 export default router;

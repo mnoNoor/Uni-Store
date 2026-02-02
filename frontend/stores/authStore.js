@@ -8,13 +8,13 @@ export const useAuthStore = create((set) => ({
   user: null,
   isLoading: false,
   error: null,
-  signup: async (email, password, userName) => {
+  signup: async (email, password, username) => {
     set({ isLoading: true, error: null });
     try {
       const response = await instance.post("/auth/signup", {
         email,
         password,
-        userName,
+        username,
       });
       set({ user: response.data.user, token: response.data.token });
     } catch (error) {
@@ -27,7 +27,7 @@ export const useAuthStore = create((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await instance.post("/auth", { email, password });
-      set({ user: response.data.user, token: response.data.token });
+      set({ user: response.data.user });
     } catch (error) {
       set({ error: error.response?.data?.message || error.message });
     } finally {

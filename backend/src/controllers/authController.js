@@ -35,7 +35,6 @@ export async function login(req, res) {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    res;
     return res.status(400).json({ message: "Email and password are required" });
   }
 
@@ -46,7 +45,7 @@ export async function login(req, res) {
   if (!user) {
     return res
       .status(401)
-      .json({ message: "you don't have an account, please sign in" });
+      .json({ message: "You don't have an account, please sign in" });
   }
 
   const isPasswordCorrect = await bcrypt.compare(password, user.password);

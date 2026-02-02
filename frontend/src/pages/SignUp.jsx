@@ -1,39 +1,36 @@
+// SignUp.jsx
 import Header from "../layout/Header";
 import NavBar from "../layout/NavBar";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { User, Lock, Mail, Loader } from "lucide-react";
+import { Loader } from "lucide-react";
 import { useAuthStore } from "../stores/authStore";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
-  const [loading, setLoading] = useState(false);
   const { signup, isLoading, error } = useAuthStore();
-
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    setLoading(true);
     try {
       await signup(email, password, userName);
       toast.success("Sign up successful!");
       navigate("/add-book");
-    } catch (error) {
-      console.error("Sign up error:", error);
-      toast.error("Sign up failed!");
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      console.error("Sign up error:", err);
+      toast.error(err.message || "Sign up failed!");
     }
   };
+
   return (
     <div>
       <Header />
       <NavBar />
-      {loading && <Loader className="animate-spin mx-auto text-center" />}
+      {isLoading && <Loader className="animate-spin mx-auto text-center" />}
       <div className="max-w-md mx-auto p-4">
         <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
         <form onSubmit={submitHandler} className="space-y-4">
@@ -73,6 +70,7 @@ export default function SignUp() {
             <button
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              disabled={isLoading}
             >
               {isLoading ? (
                 <Loader className="animate-spin mx-auto text-center" />

@@ -26,7 +26,7 @@ export const useAuthStore = create((set) => ({
   login: async (email, password) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await instance.post("/auth", { email, password });
+      const response = await instance.post("/auth/login", { email, password });
       set({ user: response.data.user, token: response.data.token });
     } catch (error) {
       set({ error: error.response?.data?.message || error.message });

@@ -56,9 +56,7 @@ export async function editBook(req, res) {
 
   const toUpdate = { title, description, section, price };
 
-  // If a new file was uploaded, upload to Cloudinary and replace
   if (req.file) {
-    // find old book to get old public_id
     const oldBook = await Book.findById(req.params.id);
     if (!oldBook) return res.status(404).json({ message: "Book not found" });
 
@@ -75,10 +73,8 @@ export async function editBook(req, res) {
       format: "webp",
     });
 
-    // delete temp file
     await fs.unlink(req.file.path).catch(() => {});
 
-    // destroy old image from Cloudinary if it exists
     if (oldBook.imagePublicId) {
       await cloudinary.uploader.destroy(oldBook.imagePublicId).catch(() => {});
     }
