@@ -10,14 +10,14 @@ import { useAuthStore } from "../stores/authStore";
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userName, setUserName] = useState("");
+  const [username, setUserName] = useState("");
   const { signup, isLoading, error } = useAuthStore();
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      await signup(email, password, userName);
+      await signup(email, password, username);
       toast.success("Sign up successful!");
       navigate("/add-book");
     } catch (err) {
@@ -41,10 +41,9 @@ export default function SignUp() {
               type="text"
               name="userName"
               required
-              value={userName}
+              value={username}
               onChange={(e) => setUserName(e.target.value)}
             />
-            <span className="text-red-500">{error}</span>
           </div>
           <div>
             <label>Email:</label>
@@ -66,6 +65,7 @@ export default function SignUp() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          <span className="text-red-500">{error}</span>
           <div>
             <button
               type="submit"

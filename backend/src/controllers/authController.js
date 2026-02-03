@@ -28,7 +28,14 @@ export async function signup(req, res) {
 
   generateTokenAndSetCookie(res, user._id);
 
-  res.status(201).json({ message: "User registered successfully", user: user });
+  res.status(201).json({
+    message: "User registered successfully",
+    user: {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+    },
+  });
 }
 
 export async function login(req, res) {

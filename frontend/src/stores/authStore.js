@@ -8,17 +8,26 @@ export const useAuthStore = create((set) => ({
   user: null,
   isLoading: false,
   error: null,
-  signup: async (email, password, userName) => {
+  signup: async (email, password, username) => {
     set({ isLoading: true, error: null });
     try {
       const response = await instance.post("/auth/signup", {
         email,
         password,
-        userName,
+        username,
       });
-      set({ user: response.data.user, token: response.data.token });
+      set({ user: response.data.user });
+      return response.data;
     } catch (error) {
-      set({ error: error.response?.data?.message || error.message });
+      const message =
+        error.response?.data?.message ||
+        (error.response?.status === 409
+          ? "User already exists"
+          : "Signup failed");
+
+      set({ error: message });
+
+      throw new Error(message);
     } finally {
       set({ isLoading: false });
     }
