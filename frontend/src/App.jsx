@@ -15,7 +15,7 @@ function App() {
         <Route path="/books/:id" element={<BookDetails />} />
         <Route path="/edit/:id" element={<EditPage />} />
         <Route path="/login" element={<LogIn />} />
-        <Route path="/SignUp" element={<SignUp />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
     </BrowserRouter>
   );

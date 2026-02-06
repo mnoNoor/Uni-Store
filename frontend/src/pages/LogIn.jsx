@@ -1,33 +1,27 @@
 import Header from "../layout/Header";
 import NavBar from "../layout/NavBar";
-import instance from "../lib/axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Lock, Mail, Loader } from "lucide-react";
+import { useAuthStore } from "../stores/authStore";
 
 export default function LogIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { login, error, isLoading } = useAuthStore();
 
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    setLoading(true);
+
     try {
-      await instance.post("/auth", {
-        email,
-        password,
-      });
+      await login(email, password);
       toast.success("Login successful!");
-      navigate("/AddBook");
+      navigate("/add-book");
     } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Login failed!");
-    } finally {
-      setLoading(false);
+      toast.error(error.message || "Login failed!");
     }
   };
 
@@ -60,12 +54,21 @@ export default function LogIn() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          <span className={error ? "text-red-500" : "text-gray-500"}>
+            {error}
+          </span>
+          <a
+            href="/signup"
+            className="text-sm text-blue-500 hover:underline cursor-pointer"
+          >
+            Sign up here
+          </a>
           <div>
             <button
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
-              {loading ? (
+              {isLoading ? (
                 <Loader className="animate-spin mx-auto text-center" />
               ) : (
                 "Log In"

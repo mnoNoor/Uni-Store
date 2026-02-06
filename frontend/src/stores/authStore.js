@@ -1,8 +1,5 @@
 import { create } from "zustand";
 import instance from "../lib/axios";
-import axios from "axios";
-
-axios.defaults.withCredentials = true;
 
 export const useAuthStore = create((set) => ({
   user: null,
@@ -16,7 +13,7 @@ export const useAuthStore = create((set) => ({
         password,
         username,
       });
-      set({ user: response.data.user });
+      set({ user: response.data.user, token: response.data.token });
       return response.data;
     } catch (error) {
       const message =
@@ -34,11 +31,22 @@ export const useAuthStore = create((set) => ({
   },
   login: async (email, password) => {
     set({ isLoading: true, error: null });
+
     try {
       const response = await instance.post("/auth/login", { email, password });
-      set({ user: response.data.user, token: response.data.token });
+
+      set({
+        user: response.data.user,
+        token: response.data.token,
+      });
+
+      return response.data;
     } catch (error) {
-      set({ error: error.response?.data?.message || error.message });
+      const message =
+        error.response?.data?.message || "Invalid email or password";
+
+      set({ error: message });
+      throw new Error(message);
     } finally {
       set({ isLoading: false });
     }

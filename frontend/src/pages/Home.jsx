@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import axios from "axios";
+import instance from "../lib/axios";
 
 import Header from "../layout/Header";
 import AddBookButton from "../layout/AddBookButton";
@@ -8,21 +8,22 @@ import ProductCard from "../layout/BookCard";
 import RateLimitedUI from "../components/RateLimitedUI";
 import Footer from "../layout/Footer";
 import LoadingSkeleton from "../components/LoadingSkeleton";
+import SearchBar from "../components/SearchBar";
 
 export default function Home() {
   const [isRateLimited, setIsRateLimited] = useState(false);
   const [loading, setLoading] = useState(true);
   const [books, setBooks] = useState([]);
+  const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     let mounted = true;
     const fetchBooks = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http://localhost:5000/api/books");
+        const res = await instance.get("/books");
         if (!mounted) return;
         setBooks(res.data);
       } catch (err) {
@@ -44,16 +45,26 @@ export default function Home() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
+
     let list = books.filter(
       (b) =>
         b.title.toLowerCase().includes(q) ||
         b.description.toLowerCase().includes(q) ||
         (b.author || "").toLowerCase().includes(q),
     );
-    if (sortBy === "price-asc") list = list.sort((a, b) => a.price - b.price);
-    if (sortBy === "price-desc") list = list.sort((a, b) => b.price - a.price);
-    if (sortBy === "newest")
-      list = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    if (sortBy === "price-asc") {
+      list = [...list].sort((a, b) => a.price - b.price);
+    }
+    if (sortBy === "price-desc") {
+      list = [...list].sort((a, b) => b.price - a.price);
+    }
+    if (sortBy === "newest") {
+      list = [...list].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+      );
+    }
+
     return list;
   }, [books, query, sortBy]);
 
@@ -62,42 +73,12 @@ export default function Home() {
       <Header />
       <NavBar />
       <main className="container mx-auto flex-1 px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="w-full max-w-lg">
-            <label htmlFor="search" className="sr-only">
-              Search books
-            </label>
-            <div className="relative">
-              <input
-                id="search"
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search title, author or description..."
-                className="w-full pl-4 pr-10 py-2 rounded-md border focus:outline-none focus:ring focus:border-green-300"
-              />
-              <span className="absolute right-3 top-2 text-sm text-gray-400">
-                ⌘K
-              </span>
-            </div>
-          </div>
-
-          <div className="ml-4 flex items-center space-x-2">
-            <label htmlFor="sort" className="text-sm text-gray-600">
-              Sort
-            </label>
-            <select
-              id="sort"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="py-2 px-3 border rounded-md bg-white"
-            >
-              <option value="newest">Newest</option>
-              <option value="price-asc">Price: Low → High</option>
-              <option value="price-desc">Price: High → Low</option>
-            </select>
-          </div>
-        </div>
+        <SearchBar
+          query={query}
+          setQuery={setQuery}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
 
         {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

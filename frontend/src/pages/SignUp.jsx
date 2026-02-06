@@ -3,7 +3,7 @@ import Header from "../layout/Header";
 import NavBar from "../layout/NavBar";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Loader } from "lucide-react";
 import { useAuthStore } from "../stores/authStore";
 
@@ -66,6 +66,14 @@ export default function SignUp() {
             />
           </div>
           <span className="text-red-500">{error}</span>
+          <div>
+            <Link to="/login" className="text-sm text-gray-700">
+              Already have an account?{" "}
+              <span className="underline text-blue-500 hover:text-blue-600">
+                Log in here
+              </span>
+            </Link>
+          </div>
           <div>
             <button
               type="submit"
