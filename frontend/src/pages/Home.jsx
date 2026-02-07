@@ -4,7 +4,7 @@ import instance from "../lib/axios";
 import Header from "../layout/Header";
 import AddBookButton from "../layout/AddBookButton";
 import NavBar from "../layout/NavBar";
-import ProductCard from "../layout/BookCard";
+import BookCard from "../layout/BookCard";
 import RateLimitedUI from "../components/RateLimitedUI";
 import Footer from "../layout/Footer";
 import LoadingSkeleton from "../components/LoadingSkeleton";
@@ -17,6 +17,16 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  useEffect(() => {
+    instance
+      .get("/auth/user-auth", { withCredentials: true })
+      .then(() => setIsAuthenticated(true))
+      .catch(() => setIsAuthenticated(false))
+      .finally(() => setCheckingAuth(false));
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -108,13 +118,17 @@ export default function Home() {
         {!loading && !isRateLimited && !error && filtered.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filtered.map((book) => (
-              <ProductCard key={book._id} book={book} setBooks={setBooks} />
+              <BookCard key={book._id} book={book} setBooks={setBooks} />
             ))}
           </div>
         )}
       </main>
 
-      <AddBookButton />
+      <AddBookButton
+        isAuthenticated={isAuthenticated}
+        checkingAuth={checkingAuth}
+      />
+
       <Footer />
     </div>
   );

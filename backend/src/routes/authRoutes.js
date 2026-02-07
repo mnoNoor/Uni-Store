@@ -8,13 +8,13 @@ import {
 import asyncHandler from "../utils/asyncHandler.js";
 import { authMiddleware } from "../middlewares/auth.js";
 import { validate } from "../middlewares/validation.js";
-import { validateUserSchema } from "../validators/userValidator.js";
+import { logInUpUserValidator } from "../validators/logInUpUserValidator.js";
 import { signUpUserValidator } from "../validators/signUpUserValidator.js";
 
 const router = express.Router();
 
 router.get("/user-auth", authMiddleware, asyncHandler(userAuth));
-router.post("/login", validate(validateUserSchema), asyncHandler(login));
+router.post("/login", validate(logInUpUserValidator), asyncHandler(login));
 router.post("/signup", validate(signUpUserValidator), asyncHandler(signup));
 router.post("/logout", asyncHandler(logout));
 

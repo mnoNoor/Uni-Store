@@ -4,11 +4,10 @@ import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { formatCurrency } from "../utils/format";
 
-export default function ProductCard({ book, setBooks }) {
+export default function BookCard({ book, setBooks }) {
   const navigate = useNavigate();
 
   const handleDelete = async (e) => {
-    // prevent Link / card click propagation
     e.stopPropagation();
     e.preventDefault();
     try {
