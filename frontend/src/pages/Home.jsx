@@ -22,7 +22,7 @@ export default function Home() {
 
   useEffect(() => {
     instance
-      .get("/auth/user-auth", { withCredentials: true })
+      .get("/auth/user-auth")
       .then(() => setIsAuthenticated(true))
       .catch(() => setIsAuthenticated(false))
       .finally(() => setCheckingAuth(false));
@@ -36,11 +36,11 @@ export default function Home() {
         const res = await instance.get("/books");
         if (!mounted) return;
         setBooks(res.data);
-      } catch (err) {
-        if (err.response?.status === 429) {
+      } catch (error) {
+        if (error.response?.status === 429) {
           setIsRateLimited(true);
         } else {
-          console.error("Error fetching books:", err);
+          console.error("Error fetching books:", error);
           setError("Could not load books. Try again later.");
         }
       } finally {
