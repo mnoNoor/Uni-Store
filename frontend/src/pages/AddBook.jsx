@@ -15,6 +15,8 @@ export default function AddBook() {
   const [price, setPrice] = useState("");
   const [loading, setLoading] = useState(false);
   const [isRateLimited, setIsRateLimited] = useState(false);
+  const [whatsapp, setWhatsapp] = useState("");
+  const [telegram, setTelegram] = useState("");
 
   const navigate = useNavigate();
 
@@ -24,6 +26,12 @@ export default function AddBook() {
       toast.error("All fields are required");
       return;
     }
+
+    if (!whatsapp && !telegram) {
+      toast.error("Add WhatsApp or Telegram contact");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -33,6 +41,8 @@ export default function AddBook() {
       formData.append("description", description);
       formData.append("section", section);
       formData.append("price", price);
+      formData.append("whatsapp", whatsapp);
+      formData.append("telegram", telegram);
 
       await instance.post("/books", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -66,7 +76,9 @@ export default function AddBook() {
           <h2 className="text-2xl font-bold mb-4">Add New Book</h2>
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label className="block mb-1 font-semibold">Image URL</label>
+              <label className="block mb-1 font-semibold">
+                Upload an image
+              </label>
               <input
                 type="file"
                 accept="image/*"
@@ -117,6 +129,28 @@ export default function AddBook() {
                 className="w-full border border-gray-300 p-2 rounded"
               />
             </div>
+            <div>
+              <label className="block mb-1 font-semibold">WhatsApp</label>
+              <input
+                type="text"
+                placeholder="+966xxxxxxxxx"
+                value={whatsapp}
+                onChange={(e) => setWhatsapp(e.target.value)}
+                className="w-full border border-gray-300 p-2 rounded"
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1 font-semibold">Telegram</label>
+              <input
+                type="text"
+                placeholder="@username"
+                value={telegram}
+                onChange={(e) => setTelegram(e.target.value)}
+                className="w-full border border-gray-300 p-2 rounded"
+              />
+            </div>
+
             <button
               type="submit"
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"

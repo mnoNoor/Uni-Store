@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const bookSchema = new mongoose.Schema(
   {
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -25,6 +30,13 @@ const bookSchema = new mongoose.Schema(
       type: Number,
       required: true,
       min: 0,
+    },
+    whatsapp: {
+      type: Number,
+    },
+    telegram: {
+      type: String,
+      trim: true,
     },
   },
   { timestamps: true },

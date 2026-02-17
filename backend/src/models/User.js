@@ -3,6 +3,10 @@ import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
+    image: {
+      type: String,
+      required: true,
+    },
     username: {
       type: String,
       required: true,
@@ -33,10 +37,6 @@ const userSchema = new mongoose.Schema(
     isVerified: {
       type: Boolean,
       default: false,
-    },
-    googleId: {
-      type: String,
-      sparse: true,
     },
     lastLogin: Date,
     pwdResetToken: String, // Password reset token

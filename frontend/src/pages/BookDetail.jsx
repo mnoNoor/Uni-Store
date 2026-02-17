@@ -4,6 +4,10 @@ import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import instance from "../lib/axios";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
+import {
+  ChatBubbleLeftRightIcon,
+  PaperAirplaneIcon,
+} from "@heroicons/react/24/solid";
 
 export default function BookDetails() {
   const [book, setBook] = useState(null);
@@ -68,14 +72,63 @@ export default function BookDetails() {
                   {book.description}
                 </p>
 
-                <div className="flex items-center justify-between mt-auto">
+                <div className="flex flex-col gap-4 mt-auto">
                   <p className="text-3xl font-bold text-green-600">
                     ${book.price}
                   </p>
 
-                  <button className="bg-blue-600 hover:bg-blue-700 transition text-white font-semibold px-6 py-3 rounded-lg shadow">
-                    Buy Now
-                  </button>
+                  {book.whatsapp || book.telegram ? (
+                    book.whatsapp && book.telegram ? (
+                      <div className="flex w-full rounded-xl overflow-hidden shadow-lg">
+                        <a
+                          href={`https://wa.me/${book.whatsapp}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-2 py-4 bg-green-500 hover:bg-green-600 text-white font-semibold transition"
+                        >
+                          <ChatBubbleLeftRightIcon className="h-5 w-5" />
+                          WhatsApp
+                        </a>
+
+                        <a
+                          href={`https://t.me/${book.telegram.replace("@", "")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-2 py-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold transition"
+                        >
+                          <PaperAirplaneIcon className="h-5 w-5" />
+                          Telegram
+                        </a>
+                      </div>
+                    ) : (
+                      <a
+                        href={
+                          book.whatsapp
+                            ? `https://wa.me/${book.whatsapp}`
+                            : `https://t.me/${book.telegram.replace("@", "")}`
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`w-full flex items-center justify-center gap-2 py-4 rounded-xl shadow-lg text-white font-semibold transition ${
+                          book.whatsapp
+                            ? "bg-green-500 hover:bg-green-600"
+                            : "bg-blue-500 hover:bg-blue-600"
+                        }`}
+                      >
+                        {book.whatsapp ? (
+                          <>
+                            <ChatBubbleLeftRightIcon className="h-5 w-5" />
+                            Contact via WhatsApp
+                          </>
+                        ) : (
+                          <>
+                            <PaperAirplaneIcon className="h-5 w-5" />
+                            Contact via Telegram
+                          </>
+                        )}
+                      </a>
+                    )
+                  ) : null}
                 </div>
               </div>
             </div>

@@ -16,17 +16,21 @@ export async function getOneBook(req, res) {
 }
 
 export async function createBook(req, res) {
-  const { title, description, section, price } = req.body;
+  const { title, description, section, price, whatsapp, telegram } = req.body;
 
   if (!title || !req.file || !description || !section || price == null) {
     return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  if (!whatsapp && !telegram) {
+    return res.status(400).json({ message: "Please add a contact way" });
   }
 
   const publicId = `${Date.now()}-${title.replace(/\s+/g, "-").toLowerCase()}`;
 
   const result = await cloudinary.uploader.upload(req.file.path, {
     folder: "books",
-    public_id: title.replace(/\s+/g, "-").toLowerCase(),
+    public_id: publicId,
     width: 900,
     height: 1200,
     crop: "fill",
@@ -38,12 +42,15 @@ export async function createBook(req, res) {
   await fs.unlink(req.file.path);
 
   const newBook = new Book({
+    owner: req.user._id,
     title,
     image: result.secure_url,
     imagePublicId: result.public_id,
     description,
     section,
     price,
+    whatsapp,
+    telegram,
   });
 
   await newBook.save();
@@ -52,13 +59,17 @@ export async function createBook(req, res) {
 }
 
 export async function editBook(req, res) {
-  const { title, description, section, price } = req.body;
+  const { title, description, section, price, whatsapp, telegram } = req.body;
 
-  const toUpdate = { title, description, section, price };
+  const toUpdate = { title, description, section, price, whatsapp, telegram };
 
   if (req.file) {
     const oldBook = await Book.findById(req.params.id);
     if (!oldBook) return res.status(404).json({ message: "Book not found" });
+
+    if (oldBook.owner.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not allowed" });
+    }
 
     const newPublicId = `${Date.now()}-${title.replace(/\s+/g, "-").toLowerCase()}`;
 
@@ -95,9 +106,15 @@ export async function editBook(req, res) {
 }
 
 export async function deleteBook(req, res) {
-  const deletedBook = await Book.findByIdAndDelete(req.params.id);
-  if (!deletedBook) {
-    return res.status(404).json({ message: "Book not found" });
+  const book = await Book.findById(req.params.id);
+
+  if (!book) return res.status(404).json({ message: "Book not found" });
+
+  if (book.imagePublicId) {
+    await cloudinary.uploader.destroy(book.imagePublicId).catch(() => {});
   }
-  res.status(200).json(deletedBook);
+
+  await book.deleteOne();
+
+  res.status(200).json(book);
 }
