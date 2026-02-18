@@ -18,7 +18,7 @@ export default function UserIcon() {
 
   return (
     <div>
-      <img href={user.image} className="rounded"></img>
+      <img src={user.image} className="rounded"></img>
       <h3>{user.username}</h3>
     </div>
   );
