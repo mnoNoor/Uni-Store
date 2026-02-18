@@ -7,23 +7,39 @@ import errorHandler from "./middlewares/errorHandler.js";
 import { connectDB } from "./config/db.js";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import path from "path";
 
 const app = express();
+const PORT = process.env.PORT || 5000;
+const __dirname = path.resolve();
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
+      },
+    },
+  }),
+);
 app.use(cookieParser());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+if (process.env.NODE_ENV === "development") {
+  app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+}
 app.use(express.json());
 app.use(rateLimit);
 app.use("/api/books", booksRoutes);
 app.use("/api/auth", authRoutes);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+  app.get("/files{/*path}", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+  });
+}
+
 app.use(errorHandler);
-
-app.get("/", (req, res) => {
-  res.send("Welcome to the Books API");
-});
-
-const PORT = process.env.PORT || 5000;
 
 connectDB().then(() =>
   app.listen(PORT, () =>
