@@ -41,16 +41,19 @@ export default function AddBook() {
       formData.append("description", description);
       formData.append("section", section);
       formData.append("price", price);
-      formData.append("whatsapp", whatsapp);
+      formData.append("whatsapp", Number(whatsapp));
       formData.append("telegram", telegram);
 
       await instance.post("/books", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       toast.success("Book added successfully");
       navigate("/");
     } catch (error) {
       console.error("Error adding book:", error);
+      console.log("server response body:", error.response?.data);
       if (error.response?.status === 429) {
         toast.error("slow down, too many requests.");
         setIsRateLimited(true);
@@ -133,7 +136,7 @@ export default function AddBook() {
               <label className="block mb-1 font-semibold">WhatsApp</label>
               <input
                 type="text"
-                placeholder="+966xxxxxxxxx"
+                placeholder="050xxxxxxx"
                 value={whatsapp}
                 onChange={(e) => setWhatsapp(e.target.value)}
                 className="w-full border border-gray-300 p-2 rounded"

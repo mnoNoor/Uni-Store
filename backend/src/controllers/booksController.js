@@ -42,7 +42,7 @@ export async function createBook(req, res) {
   await fs.unlink(req.file.path);
 
   const newBook = new Book({
-    owner: req.user._id,
+    owner: req.userId,
     title,
     image: result.secure_url,
     imagePublicId: result.public_id,
