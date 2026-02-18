@@ -6,9 +6,11 @@ import rateLimit from "./middlewares/rateLimiter.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { connectDB } from "./config/db.js";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
 
 const app = express();
 
+app.use(helmet());
 app.use(cookieParser());
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());

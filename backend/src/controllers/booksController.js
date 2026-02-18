@@ -67,7 +67,7 @@ export async function editBook(req, res) {
     const oldBook = await Book.findById(req.params.id);
     if (!oldBook) return res.status(404).json({ message: "Book not found" });
 
-    if (oldBook.owner.toString() !== req.user._id.toString()) {
+    if (oldBook.owner.toString() !== req.userId.toString()) {
       return res.status(403).json({ message: "Not allowed" });
     }
 

@@ -31,6 +31,6 @@ router.put(
   validate(updateBookSchema),
   asyncHandler(editBook),
 );
-router.delete("/:id", asyncHandler(deleteBook));
+router.delete("/:id", authMiddleware, asyncHandler(deleteBook));
 
 export default router;
