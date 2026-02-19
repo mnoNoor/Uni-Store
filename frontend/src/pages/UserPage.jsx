@@ -29,10 +29,10 @@ export default function UserPage() {
     fetchUser();
   }, []);
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Header />
       <NavBar />
-      <div>
+      <div className="flex-1">
         {loading && !isRateLimited && <p>Loading user info...</p>}
         {isRateLimited && (
           <p>You are being rate limited. Please try again later.</p>

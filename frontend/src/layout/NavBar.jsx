@@ -18,16 +18,6 @@ export default function NavBar() {
           </li>
           <li>
             <NavLink
-              to="/products"
-              className={({ isActive }) =>
-                `${base} ${isActive ? "bg-green-50 text-green-700" : "text-gray-700 hover:text-green-600"}`
-              }
-            >
-              Products
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
               to="/about"
               className={({ isActive }) =>
                 `${base} ${isActive ? "bg-green-50 text-green-700" : "text-gray-700 hover:text-green-600"}`

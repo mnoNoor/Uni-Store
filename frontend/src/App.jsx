@@ -6,6 +6,8 @@ import EditPage from "./pages/EditPage";
 import LogIn from "./pages/LogIn";
 import SignUp from "./pages/SignUp";
 import UserPage from "./pages/UserPage";
+import ContactUs from "./pages/ContactUs";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/user" element={<UserPage />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/about" element={<About />} />
       </Routes>
     </BrowserRouter>
   );

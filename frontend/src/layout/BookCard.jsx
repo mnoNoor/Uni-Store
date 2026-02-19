@@ -32,12 +32,12 @@ export default function BookCard({ book, setBooks }) {
       className="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden flex flex-col"
     >
       <Link to={`/books/${book._id}`} className="group block flex-1">
-        <div className="w-full aspect-w-4 aspect-h-3 bg-gray-100 overflow-hidden">
+        <div className="w-full aspect-w-3 aspect-h-4 bg-gray-100 overflow-hidden">
           <img
             src={book.image || "/placeholder.png"}
             alt={book.title}
             loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+            className="w-full h-full object-contain group-hover:scale-105 transition-transform"
           />
         </div>
 
