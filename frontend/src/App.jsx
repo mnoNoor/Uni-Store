@@ -5,7 +5,7 @@ import BookDetails from "./pages/BookDetail";
 import EditPage from "./pages/EditPage";
 import LogIn from "./pages/LogIn";
 import SignUp from "./pages/SignUp";
-import UserPage from "./pages/userPage";
+import UserPage from "./pages/UserPage";
 
 function App() {
   return (
