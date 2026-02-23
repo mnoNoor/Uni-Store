@@ -1,19 +1,20 @@
-# Uni Store - University Books Marketplace
+# Uni Store – University Books Marketplace
 
-Uni Store is a full‑stack web application that allows university students to buy and sell books. Users can browse books, filter by section, search by title/description, and contact sellers via WhatsApp or Telegram. Authenticated users can add, edit, and delete their own book listings, with image uploads handled by Cloudinary. The API is rate‑limited using Upstash, secured with Helmet, and authentication is managed with JWT stored in HTTP‑only cookies.
+Uni Store is a full‑stack web application that allows university students to buy and sell books. Users can browse books, filter by section, search by title or description, and contact sellers via WhatsApp or Telegram. Authenticated users can add, edit, and delete their own book listings, with image uploads handled by Cloudinary. The API is rate‑limited using Upstash, secured with Helmet, and authentication is managed with JWT stored in HTTP‑only cookies.
 
 ---
 
 ## Features
 
 - **User authentication** – sign up, log in, log out (JWT + HTTP‑only cookies)
-- **Book management** – create, read, update, delete book listings
-- **Image upload** – books can have an image, uploaded to Cloudinary with automatic optimization
-- **Search & filter** – search by title or description; sort by price or date
+- **Book management** – create, read, update, delete book listings (edit/delete buttons only appear for owners)
+- **Image upload** – books include images uploaded to Cloudinary with preview, validation, and automatic optimization
+- **Search & filter** – search by title or description; sort by price (low to high, high to low) or newest first
 - **Contact sellers** – direct links to WhatsApp or Telegram chats
-- **Rate limiting** – 100 requests per 60 seconds per user (Upstash Redis)
-- **Security** – Helmet.js with custom CSP for Cloudinary, HTTP-only cookies, CORS properly configured
-- **Responsive UI** – built with Tailwind CSS, works on mobile and desktop
+- **User profile page** – view your account details and all books you've listed in one place
+- **Rate limiting** – 100 requests per 60 seconds per user (Upstash Redis) with friendly UI feedback
+- **Security** – Helmet.js with custom CSP for Cloudinary, HTTP-only cookies, environment‑aware CORS
+- **Responsive UI** – built with Tailwind CSS, works seamlessly on mobile and desktop
 - **Production ready** – single-command build and deploy setup
 
 ---
@@ -34,10 +35,11 @@ Uni Store is a full‑stack web application that allows university students to b
 
 - **Framework**: React (Vite)
 - **State management**: Zustand
-- **Routing**: React Router v6
+- **Routing**: React Router v6 (with layout pattern)
 - **HTTP client**: Axios (with credentials, environment-aware base URL)
 - **Styling**: Tailwind CSS, Heroicons, Lucide React
 - **Notifications**: react‑hot‑toast
+- **Architecture**: Feature-based folder structure (auth, books, shared components, etc.)
 
 ### Services
 
@@ -179,10 +181,11 @@ Base URL: `http://localhost:5000/api`
 | POST   | `/auth/logout`    | Log out the current user                     | No (clears cookie) |
 | GET    | `/auth/user-auth` | Get authenticated user info                  | Yes                |
 | GET    | `/books`          | Get all books                                | No                 |
+| GET    | `/books/user/me`  | Get books belonging to current user          | Yes                |
 | GET    | `/books/:id`      | Get a single book by ID                      | No                 |
 | POST   | `/books`          | Create a new book (multipart/form-data)      | Yes                |
-| PUT    | `/books/:id`      | Update a book (multipart/form-data optional) | Yes                |
-| DELETE | `/books/:id`      | Delete a book                                | Yes                |
+| PUT    | `/books/:id`      | Update a book (multipart/form-data optional) | Yes (owner only)   |
+| DELETE | `/books/:id`      | Delete a book                                | Yes (owner only)   |
 
 All protected routes expect an HTTP‑only cookie named `token` containing a valid JWT.
 
@@ -207,27 +210,25 @@ uni-store/
 ├── frontend/               # React app
 │   ├── public/
 │   ├── src/
-│   │   ├── components/     # Reusable UI (LoadingSkeleton, RateLimitedUI, SearchBar)
-│   │   ├── layout/         # Layout components (Header, Footer, NavBar, BookCard)
-│   │   ├── lib/            # Axios instance
-│   │   ├── pages/          # Page components (Home, AddBook, BookDetail, etc.)
+│   │   ├── Features/       # Feature-based architecture
+│   │   │   ├── auth/       # Authentication components
+│   │   │   ├── books/      # Book-related components
+│   │   │   ├── layout/     # Layout components (Header, Footer, NavBar)
+│   │   │   ├── pages/      # Static pages (About, Contact)
+│   │   │   ├── shared/     # Reusable components (ImageUpload, ContactSection)
+│   │   │   ├── user/       # User profile components
+│   │   │   └── utils/      # Helper functions (formatCurrency)
+│   │   ├── lib/            # Axios instance (environment-aware)
 │   │   ├── stores/         # Zustand store (authStore)
-│   │   ├── utils/          # Helper functions (formatCurrency)
 │   │   ├── App.jsx
 │   │   └── main.jsx
 │   ├── .env
 │   ├── index.html
 │   └── package.json
 │
-├── package.json
+├── package.json            # Root package.json for easy deployment
 └── README.md
 ```
-
----
-
-## Rate Limiting
-
-The API uses Upstash Redis with a sliding window rate limiter: **100 requests per 60 seconds** per user (identified by the JWT token). When the limit is exceeded, the server responds with a `429 Too Many Requests` status, and the frontend displays a friendly rate‑limited UI.
 
 ---
 
@@ -238,14 +239,36 @@ The API uses Upstash Redis with a sliding window rate limiter: **100 requests pe
 - **Environment‑aware CORS** – only allows frontend origin in development
 - **Rate limiting** – prevents brute force and DoS attacks
 - **Password hashing** – bcrypt with salt rounds
-- **Input validation** – Joi schemas on all endpoints
-- **File restrictions** – size limits, type validation via Cloudinary
+- **Input validation** – Joi schemas on all endpoints (backend) + frontend validation
+- **File restrictions** – size limits (5MB), type validation
+- **Owner verification** – users can only edit/delete their own books
 
 ---
 
-## Contributing
+## Deployment
 
-Contributions are welcome! Feel free to open issues or submit pull requests.
+### Deploy as a single app (Render, Railway, etc.)
+
+1. Push code to GitHub
+2. Connect your repository to the hosting platform
+3. Set build command: `npm run build`
+4. Set start command: `npm start`
+5. Add all environment variables from [backend .env](#backend-env)
+
+The app will serve both API and frontend from the same domain.
+
+## What's Next / Planned Features
+
+- [ ] Email verification (schema ready)
+- [ ] Password reset flow (schema ready)
+- [ ] Edit profile page
+- [ ] Admin dashboard for moderation
+- [ ] Pagination for books endpoint
+- [ ] Unit and integration tests
+- [ ] Swagger API documentation
+- [ ] Docker containerization
+- [ ] Structured logging (winston/pino)
+- [ ] Search debouncing for better performance
 
 ---
 
@@ -262,7 +285,14 @@ This project is open source and available under the [MIT License](https://openso
 - [Tailwind CSS](https://tailwindcss.com) for styling
 - [Zustand](https://github.com/pmndrs/zustand) for lightweight state management
 - [Helmet](https://helmetjs.github.io/) for security headers
+- [Lucide React](https://lucide.dev) for beautiful icons
 - All other open‑source libraries used in this project
+
+---
+
+## Contact
+
+Project Link: [https://github.com/mnoNoor/Uni-Store](https://github.com/mnoNoor/Uni-Store)
 
 ---
 
