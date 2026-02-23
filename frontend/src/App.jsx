@@ -3,7 +3,7 @@ import { useAuthStore } from "./stores/authStore";
 import { useEffect } from "react";
 
 import Layout from "./Features/layout/Layout";
-import Home from "./Features/Pages/Home";
+import Home from "./Features/pages/Home";
 import AddBook from "./Features/books/AddBook";
 import BookDetails from "./Features/books/BookDetail";
 import EditPage from "./Features/books/EditPage";

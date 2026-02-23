@@ -24,6 +24,8 @@ app.use(
           "'self'",
           "http://localhost:5000",
           "http://localhost:5173",
+          "ws://localhost:5173",
+          "ws://localhost:5000",
         ],
         "default-src": ["'self'"],
       },
