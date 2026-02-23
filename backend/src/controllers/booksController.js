@@ -7,6 +7,11 @@ export async function getAllBooks(_, res) {
   res.status(200).json(books);
 }
 
+export async function getUserBooks(req, res) {
+  const books = await Book.find({ owner: req.userId });
+  res.status(200).json(books);
+}
+
 export async function getOneBook(req, res) {
   const book = await Book.findById(req.params.id);
   if (!book) {
@@ -33,8 +38,7 @@ export async function createBook(req, res) {
     public_id: publicId,
     width: 900,
     height: 1200,
-    crop: "fill",
-    gravity: "auto",
+    crop: "limit",
     quality: "auto",
     format: "webp",
   });
@@ -55,7 +59,6 @@ export async function createBook(req, res) {
 
   await newBook.save();
   res.status(201).json(newBook);
-  console.log("Book created successfully");
 }
 
 export async function editBook(req, res) {

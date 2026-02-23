@@ -40,7 +40,6 @@ export async function signup(req, res) {
 
 export async function login(req, res) {
   const { email, password } = req.body;
-  console.log("LOGIN BODY:", req.body);
 
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
@@ -51,17 +50,13 @@ export async function login(req, res) {
   );
 
   if (!user) {
-    return res
-      .status(401)
-      .json({ message: "You don't have an account, please sign in" });
+    return res.status(401).json({ message: "Account not found" });
   }
 
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
   if (!isPasswordCorrect) {
-    return res
-      .status(401)
-      .json({ message: "Password in incorrect. please try again" });
+    return res.status(401).json({ message: "Password is incorrect" });
   }
 
   generateTokenAndSetCookie(res, user._id);
@@ -69,7 +64,12 @@ export async function login(req, res) {
   user.lastLogin = new Date();
   await user.save();
 
-  res.status(200).json({ message: "User logged in successfully" });
+  user.password = undefined;
+
+  res.status(200).json({
+    message: "User logged in successfully",
+    user,
+  });
 }
 
 export async function logout(req, res) {

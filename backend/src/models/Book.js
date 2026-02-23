@@ -32,7 +32,8 @@ const bookSchema = new mongoose.Schema(
       min: 0,
     },
     whatsapp: {
-      type: Number,
+      type: String,
+      trim: true,
     },
     telegram: {
       type: String,

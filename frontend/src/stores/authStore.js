@@ -5,42 +5,51 @@ export const useAuthStore = create((set) => ({
   user: null,
   isLoading: false,
   error: null,
+
+  setUser: (user) => set({ user }),
+
+  fetchUser: async () => {
+    set({ isLoading: true });
+
+    try {
+      const res = await instance.get("/auth/user-auth");
+      set({ user: res.data.user, isLoading: false });
+    } catch {
+      set({ user: null, isLoading: false });
+    }
+  },
+
   signup: async (email, password, username) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await instance.post("/auth/signup", {
+      const res = await instance.post("/auth/signup", {
         email,
         password,
         username,
       });
-      set({ user: response.data.user, token: response.data.token });
-      return response.data;
+
+      set({ user: res.data.user });
+      return res.data;
     } catch (error) {
-      const message =
-        error.response?.data?.message ||
-        (error.response?.status === 409
-          ? "User already exists"
-          : "Signup failed");
-
+      const message = error.response?.data?.message || "Signup failed";
       set({ error: message });
-
       throw new Error(message);
     } finally {
       set({ isLoading: false });
     }
   },
+
   login: async (email, password) => {
     set({ isLoading: true, error: null });
 
     try {
-      const response = await instance.post("/auth/login", { email, password });
-
-      set({
-        user: response.data.user,
-        token: response.data.token,
+      const res = await instance.post("/auth/login", {
+        email,
+        password,
       });
 
-      return response.data;
+      set({ user: res.data.user });
+      return res.data;
     } catch (error) {
       const message =
         error.response?.data?.message || "Invalid email or password";
@@ -51,7 +60,9 @@ export const useAuthStore = create((set) => ({
       set({ isLoading: false });
     }
   },
-  logout: () => {
-    set({ user: null, token: null });
+
+  logout: async () => {
+    await instance.post("/auth/logout");
+    set({ user: null });
   },
 }));

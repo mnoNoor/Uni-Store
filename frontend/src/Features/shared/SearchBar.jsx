@@ -15,9 +15,6 @@ export default function SearchBar({ query, setQuery, sortBy, setSortBy }) {
             placeholder="Search title, author or description..."
             className="w-full pl-4 pr-10 py-2 rounded-md border focus:outline-none focus:ring focus:border-green-300"
           />
-          <span className="absolute right-3 top-2 text-sm text-gray-400">
-            ⌘K
-          </span>
         </div>
       </div>
 

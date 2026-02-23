@@ -1,35 +1,24 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import instance from "../lib/axios";
+import { useAuthStore } from "../../stores/authStore";
 
 export default function UserIcon() {
-  const [user, setUser] = useState(null);
+  const user = useAuthStore((state) => state.user);
+  const isLoading = useAuthStore((state) => state.isLoading);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await instance.get("/auth/user-auth");
-        setUser(res.data.user);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchUser();
-  }, []);
-
-  if (!user) {
+  if (isLoading) {
     return <div className="w-10 h-10 bg-white/20 rounded-full animate-pulse" />;
   }
+
+  if (!user) return null;
 
   return (
     <Link to="/user">
       <div className="flex items-center space-x-3 cursor-pointer group">
         <img
-          src={user.image || "/avatar.png"}
+          src={user.image || "/avatar.webp"}
           alt="user"
           className="w-10 h-10 rounded-full object-cover border-2 border-white/70 transition group-hover:scale-105"
         />
-
         <span className="hidden md:block font-medium group-hover:underline">
           {user.username}
         </span>

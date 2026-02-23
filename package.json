@@ -1,7 +1,7 @@
 {
   "name": "test",
   "version": "1.0.0",
-  "description": "Uni Shop is a full‑stack web application that allows university students to buy and sell books. Users can browse books, filter by section, search by title/author, and contact sellers via WhatsApp or Telegram. Authenticated users can add, edit, and delete their own book listings, with image uploads handled by Cloudinary. The API is rate‑limited using Upstash, and authentication is managed with JWT stored in HTTP‑only cookies.",
+  "description": "Uni store is a full‑stack web application that allows university students to buy and sell books. Users can browse books, filter by section, search by title/author, and contact sellers via WhatsApp or Telegram. Authenticated users can add, edit, and delete their own book listings, with image uploads handled by Cloudinary. The API is rate‑limited using Upstash, and authentication is managed with JWT stored in HTTP‑only cookies.",
   "main": "index.js",
   "scripts": {
     "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",

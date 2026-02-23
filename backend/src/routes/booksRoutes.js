@@ -5,6 +5,7 @@ import {
   createBook,
   editBook,
   deleteBook,
+  getUserBooks,
 } from "../controllers/booksController.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import upload from "../middlewares/upload.js";
@@ -16,6 +17,7 @@ import { authMiddleware } from "../middlewares/auth.js";
 const router = express.Router();
 
 router.get("/", asyncHandler(getAllBooks));
+router.get("/user/me", authMiddleware, asyncHandler(getUserBooks));
 router.get("/:id", asyncHandler(getOneBook));
 router.post(
   "/",

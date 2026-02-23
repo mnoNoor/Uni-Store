@@ -1,11 +1,17 @@
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../stores/authStore";
 
-export default function AddBookButton({ isAuthenticated }) {
+export default function AddBookButton() {
   const navigate = useNavigate();
 
+  const user = useAuthStore((state) => state.user);
+  const isLoading = useAuthStore((state) => state.isLoading);
+
   const handleClick = () => {
-    if (!isAuthenticated) {
-      navigate("/login", { state: { from: "/add-book" } });
+    if (isLoading) return;
+
+    if (!user) {
+      navigate("/signup", { state: { from: "/add-book" } });
       return;
     }
 

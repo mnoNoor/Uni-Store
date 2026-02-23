@@ -1,14 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
-import instance from "../lib/axios";
+import instance from "../../lib/axios";
 
-import Header from "../layout/Header";
-import AddBookButton from "../layout/AddBookButton";
-import NavBar from "../layout/NavBar";
-import BookCard from "../layout/BookCard";
-import RateLimitedUI from "../components/RateLimitedUI";
-import Footer from "../layout/Footer";
-import LoadingSkeleton from "../components/LoadingSkeleton";
-import SearchBar from "../components/SearchBar";
+import AddBookButton from "../books/AddBookButton";
+import BookCard from "../books/BookCard";
+import RateLimitedUI from "../shared/RateLimitedUI";
+import LoadingSkeleton from "../shared/LoadingSkeleton";
+import SearchBar from "../shared/SearchBar";
+import { useAuthStore } from "../../stores/authStore";
 
 export default function Home() {
   const [isRateLimited, setIsRateLimited] = useState(false);
@@ -17,16 +15,8 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(true);
 
-  useEffect(() => {
-    instance
-      .get("/auth/user-auth")
-      .then(() => setIsAuthenticated(true))
-      .catch(() => setIsAuthenticated(false))
-      .finally(() => setCheckingAuth(false));
-  }, []);
+  const { user } = useAuthStore();
 
   useEffect(() => {
     let mounted = true;
@@ -80,8 +70,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Header />
-      <NavBar />
       <main className="container mx-auto flex-1 px-4 sm:px-6 lg:px-8 py-6">
         <SearchBar
           query={query}
@@ -118,18 +106,18 @@ export default function Home() {
         {!loading && !isRateLimited && !error && filtered.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filtered.map((book) => (
-              <BookCard key={book._id} book={book} setBooks={setBooks} />
+              <BookCard
+                key={book._id}
+                book={book}
+                setBooks={setBooks}
+                currentUserId={user?._id}
+              />
             ))}
           </div>
         )}
       </main>
 
-      <AddBookButton
-        isAuthenticated={isAuthenticated}
-        checkingAuth={checkingAuth}
-      />
-
-      <Footer />
+      <AddBookButton />
     </div>
   );
 }

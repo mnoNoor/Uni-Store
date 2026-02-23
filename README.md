@@ -1,6 +1,6 @@
-# Uni Shop - University Books Marketplace
+# Uni Store - University Books Marketplace
 
-Uni Shop is a full‑stack web application that allows university students to buy and sell books. Users can browse books, filter by section, search by title/description, and contact sellers via WhatsApp or Telegram. Authenticated users can add, edit, and delete their own book listings, with image uploads handled by Cloudinary. The API is rate‑limited using Upstash, secured with Helmet, and authentication is managed with JWT stored in HTTP‑only cookies.
+Uni Store is a full‑stack web application that allows university students to buy and sell books. Users can browse books, filter by section, search by title/description, and contact sellers via WhatsApp or Telegram. Authenticated users can add, edit, and delete their own book listings, with image uploads handled by Cloudinary. The API is rate‑limited using Upstash, secured with Helmet, and authentication is managed with JWT stored in HTTP‑only cookies.
 
 ---
 
@@ -62,8 +62,8 @@ Uni Shop is a full‑stack web application that allows university students to bu
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/mnoNoor/uni-shop.git
-cd uni-shop
+git clone https://github.com/mnoNoor/uni-store.git
+cd uni-store
 ```
 
 ### 2. Install dependencies (root level)
@@ -191,7 +191,7 @@ All protected routes expect an HTTP‑only cookie named `token` containing a val
 ## Folder Structure
 
 ```
-uni-shop/
+uni-store/
 ├── backend/                # Express server
 │   ├── config/             # DB, Cloudinary, Upstash configs
 │   ├── controllers/        # Route handlers (auth, books)

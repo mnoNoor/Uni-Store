@@ -18,7 +18,14 @@ app.use(
     contentSecurityPolicy: {
       useDefaults: true,
       directives: {
-        imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        "img-src": ["'self'", "data:", "https://res.cloudinary.com"],
+        "connect-src": [
+          "'self'",
+          "http://localhost:5000",
+          "http://localhost:5173",
+        ],
+        "default-src": ["'self'"],
       },
     },
   }),
