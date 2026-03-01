@@ -99,55 +99,92 @@ export default function AddBook() {
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <ImageUpload image={image} setImage={setImage} />
-
-            <input
-              name="title"
-              placeholder="Book Title *"
-              value={form.title}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg"
-              required
-            />
-
-            <textarea
-              name="description"
-              placeholder="Description *"
-              value={form.description}
-              onChange={handleChange}
-              rows="4"
-              className="w-full px-4 py-2 border rounded-lg resize-none"
-              required
-            />
-
-            <div className="flex gap-3">
-              {sections.map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => setForm({ ...form, section: value })}
-                  className={`px-6 py-2 rounded-lg transition ${
-                    form.section === value
-                      ? "bg-green-600 text-white"
-                      : "bg-gray-200"
-                  }`}
-                >
-                  {value}
-                </button>
-              ))}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Book Image
+              </label>
+              <ImageUpload image={image} setImage={setImage} />
             </div>
 
-            <input
-              type="number"
-              name="price"
-              placeholder="Price *"
-              value={form.price}
-              onChange={handleChange}
-              min="0"
-              step="0.01"
-              className="w-full px-4 py-2 border rounded-lg"
-              required
-            />
+            <div>
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Book Title <span className="text-red-600 text-lg">*</span>
+              </label>
+              <input
+                id="title"
+                name="title"
+                placeholder="Enter book title"
+                value={form.title}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                required
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Description <span className="text-red-600 text-lg">*</span>
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                placeholder="Enter book description"
+                value={form.description}
+                onChange={handleChange}
+                rows="4"
+                className="w-full px-4 py-2 border rounded-lg resize-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Section <span className="text-red-600 text-lg">*</span>
+              </label>
+              <div className="flex gap-3">
+                {sections.map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setForm({ ...form, section: value })}
+                    className={`px-6 py-2 rounded-lg transition ${
+                      form.section === value
+                        ? "bg-green-600 text-white"
+                        : "bg-gray-200 hover:bg-gray-300"
+                    }`}
+                  >
+                    {value}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="price"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Price <span className="text-red-600 text-lg">*</span>
+              </label>
+              <input
+                id="price"
+                type="number"
+                name="price"
+                placeholder="Enter price"
+                value={form.price}
+                onChange={handleChange}
+                min="0"
+                step="0.01"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                required
+              />
+            </div>
 
             <ContactSection
               whatsapp={form.whatsapp}
@@ -159,7 +196,9 @@ export default function AddBook() {
               type="submit"
               disabled={loading}
               className={`w-full py-3 rounded-lg text-white font-semibold transition ${
-                loading ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-green-600 hover:bg-green-700"
               }`}
             >
               {loading ? (

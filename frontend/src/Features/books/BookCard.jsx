@@ -38,11 +38,14 @@ export default function BookCard({ book, setBooks, currentUserId }) {
   return (
     <article className="bg-white rounded-lg shadow hover:shadow-md transition overflow-hidden">
       <Link to={`/books/${book._id}`}>
-        <div className="aspect-3/4 w-full bg-gray-100">
+        <div
+          className="relative w-full bg-gray-100"
+          style={{ height: "300px" }}
+        >
           <img
             src={book.image || "/placeholder.png"}
             alt={book.title}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain absolute inset-0"
           />
         </div>
 
