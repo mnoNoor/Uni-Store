@@ -5,17 +5,18 @@ export const useAuthStore = create((set) => ({
   user: null,
   isLoading: false,
   error: null,
+  isCheckingAuth: true,
 
   setUser: (user) => set({ user }),
 
   fetchUser: async () => {
-    set({ isLoading: true });
+    set({ isLoading: true, isCheckingAuth: true });
 
     try {
       const res = await instance.get("/auth/user-auth");
-      set({ user: res.data.user, isLoading: false });
+      set({ user: res.data.user, isLoading: false, isCheckingAuth: false });
     } catch {
-      set({ user: null, isLoading: false });
+      set({ user: null, isLoading: false, isCheckingAuth: false });
     }
   },
 

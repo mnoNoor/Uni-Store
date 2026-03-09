@@ -1,7 +1,10 @@
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function NavBar() {
+  const { t } = useTranslation();
   const base = "px-3 py-2 rounded-md text-sm";
+
   return (
     <nav className="bg-white shadow-sm">
       <div className="container mx-auto px-4">
@@ -13,7 +16,7 @@ export default function NavBar() {
                 `${base} ${isActive ? "bg-green-50 text-green-700" : "text-gray-700 hover:text-green-600"}`
               }
             >
-              Home
+              {t("home")}
             </NavLink>
           </li>
           <li>
@@ -23,7 +26,7 @@ export default function NavBar() {
                 `${base} ${isActive ? "bg-green-50 text-green-700" : "text-gray-700 hover:text-green-600"}`
               }
             >
-              About
+              {t("about")}
             </NavLink>
           </li>
           <li>
@@ -33,7 +36,7 @@ export default function NavBar() {
                 `${base} ${isActive ? "bg-green-50 text-green-700" : "text-gray-700 hover:text-green-600"}`
               }
             >
-              Contact
+              {t("contact")}
             </NavLink>
           </li>
         </ul>

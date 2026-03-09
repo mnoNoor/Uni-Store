@@ -2,6 +2,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useAuthStore } from "./stores/authStore";
 import { useEffect } from "react";
 
+import "./lib/i18n";
+import { useDirection } from "./lib/i18nDir";
+
 import Layout from "./Features/layout/Layout";
 import Home from "./Features/pages/Home";
 import AddBook from "./Features/books/AddBook";
@@ -19,6 +22,8 @@ function App() {
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
+
+  useDirection();
 
   return (
     <BrowserRouter>

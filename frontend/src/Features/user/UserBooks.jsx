@@ -15,14 +15,7 @@ export default function UserBooks() {
       try {
         const booksRes = await instance.get("/books/user/me");
 
-        const userRes = await instance.get("/auth/user-auth");
-        const currentUserId = userRes.data.user._id;
-
-        const userBooks = booksRes.data.filter(
-          (book) => book.owner === currentUserId,
-        );
-
-        setBooks(userBooks);
+        setBooks(booksRes.data);
         setError(null);
       } catch (error) {
         console.error("Error fetching user books:", error);

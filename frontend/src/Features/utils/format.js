@@ -1,7 +1,7 @@
 export function formatCurrency(value) {
   if (typeof value !== "number") value = Number(value) || 0;
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-SA", {
     style: "currency",
-    currency: "USD",
+    currency: "SAR",
   }).format(value);
 }

@@ -2,6 +2,7 @@ import { BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import UserIcon from "../shared/UserIcon";
+import LanguageSwitcher from "../shared/LanguageSwitcher";
 
 export default function Header() {
   return (
@@ -22,8 +23,10 @@ export default function Header() {
               </p>
             </div>
           </Link>
-
-          <UserIcon />
+          <div className="flex items-center space-x-3">
+            <LanguageSwitcher />
+            <UserIcon />
+          </div>
         </div>
       </div>
     </header>

@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes.js";
 import rateLimit from "./middlewares/rateLimiter.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { connectDB } from "./config/db.js";
+import { setupSwagger } from "./config/swagger.js";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import path from "path";
@@ -47,6 +48,8 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
   });
 }
+
+setupSwagger(app);
 
 app.use(errorHandler);
 

@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 export const updateBookSchema = Joi.object({
-  title: Joi.string().min(2).max(100),
+  title: Joi.string().min(2).max(30),
   description: Joi.string().min(10),
   section: Joi.string().valid("male", "female", "both"),
   price: Joi.number().min(0),

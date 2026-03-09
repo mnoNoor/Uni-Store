@@ -2,7 +2,6 @@ import { PenSquareIcon, Trash2Icon } from "lucide-react";
 import instance from "../../lib/axios";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import { formatCurrency } from "../utils/format";
 import { useState } from "react";
 
 export default function BookCard({ book, setBooks, currentUserId }) {
@@ -54,9 +53,7 @@ export default function BookCard({ book, setBooks, currentUserId }) {
           <p className="text-sm text-gray-600 mb-3 line-clamp-2">
             {book.description}
           </p>
-          <div className="text-green-600 font-bold">
-            {formatCurrency(book.price)}
-          </div>
+          <div className="text-green-600 font-bold">⃁{book.price}</div>
         </div>
       </Link>
 

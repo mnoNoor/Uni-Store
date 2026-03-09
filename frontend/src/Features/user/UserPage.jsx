@@ -12,14 +12,25 @@ export default function UserPage() {
   const user = useAuthStore((state) => state.user);
   const isLoading = useAuthStore((state) => state.isLoading);
   const logout = useAuthStore((state) => state.logout);
+  const isCheckingAuth = useAuthStore((state) => state.isCheckingAuth);
 
   const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
+    if (isCheckingAuth) return;
+
     if (!isLoading && !user) {
       navigate("/login");
     }
-  }, [user, isLoading, navigate]);
+  }, [user, isLoading, isCheckingAuth, navigate]);
+
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader className="animate-spin text-indigo-600" size={32} />
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -104,7 +115,7 @@ export default function UserPage() {
 
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-4">My Books</h2>
-            <UserBooks userId={user._id} />
+            <UserBooks />
           </div>
         </div>
       </div>
