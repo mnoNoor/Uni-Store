@@ -8,18 +8,20 @@ import LoadingSkeleton from "../shared/LoadingSkeleton";
 import SearchBar from "../shared/SearchBar";
 import Pagination from "../shared/Pagination";
 import { useAuthStore } from "../../stores/authStore";
+import { useTranslation } from "react-i18next";
 
 export default function Home() {
+  const { user } = useAuthStore();
+  const { t } = useTranslation();
+
   const [isRateLimited, setIsRateLimited] = useState(false);
   const [loading, setLoading] = useState(true);
   const [books, setBooks] = useState([]);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
-  const [sortBy, setSortBy] = useState("newest");
+  const [sortBy, setSortBy] = useState(t("newest"));
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
-  const { user } = useAuthStore();
 
   useEffect(() => {
     let mounted = true;

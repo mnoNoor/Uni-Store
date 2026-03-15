@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import { Trash2Icon, Loader, Save } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import instance from "../../lib/axios";
 import toast from "react-hot-toast";
@@ -10,6 +11,7 @@ import ContactSection from "../shared/ContactSection";
 
 export default function EditPage() {
   const { id } = useParams();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [form, setForm] = useState(null);
@@ -24,7 +26,7 @@ export default function EditPage() {
         const res = await instance.get(`/books/${id}`);
         setForm(res.data);
       } catch {
-        toast.error("Failed to load book");
+        toast.error("Could not load book");
         setForm(null);
       } finally {
         setLoading(false);
@@ -58,24 +60,24 @@ export default function EditPage() {
 
     try {
       await instance.put(`/books/${id}`, buildFormData());
-      toast.success("Book updated");
+      toast.success(t("bookUpdated"));
       navigate("/");
     } catch {
-      toast.error("Update failed");
+      toast.error(t("updateFailed"));
       setSaving(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!confirm("Delete this book permanently?")) return;
+    if (!confirm(t("deleteConfirmation"))) return;
 
     setDeleting(true);
     try {
       await instance.delete(`/books/${id}`);
-      toast.success("Book deleted");
+      toast.success(t("bookDeleted"));
       navigate("/");
     } catch {
-      toast.error("Delete failed");
+      toast.error(t("deleteFailed"));
       setDeleting(false);
     }
   };
@@ -91,7 +93,7 @@ export default function EditPage() {
   if (!form) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-600">Book not found</p>
+        <p className="text-gray-600">{t("bookNotFound")}</p>
       </div>
     );
   }
@@ -105,7 +107,7 @@ export default function EditPage() {
             className="flex items-center text-gray-600 hover:text-gray-900"
           >
             <ArrowLeftIcon className="h-5 w-5 mr-2" />
-            Back
+            {t("backHome")}
           </Link>
 
           <button
@@ -118,12 +120,12 @@ export default function EditPage() {
             ) : (
               <Trash2Icon size={16} />
             )}
-            Delete
+            {t("delete")}
           </button>
         </div>
 
         <div className="bg-white p-6 rounded-xl shadow-lg">
-          <h1 className="text-2xl font-bold mb-6">Edit Book</h1>
+          <h1 className="text-2xl font-bold mb-6">{t("editBook")}</h1>
 
           <form onSubmit={handleSave} className="space-y-6">
             <ImageUpload
@@ -131,45 +133,72 @@ export default function EditPage() {
               setImage={setImage}
               initialPreview={form.image}
             />
-
-            <input
-              value={form.title}
-              onChange={(e) => handleChange("title", e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg"
-              required
-            />
-
-            <textarea
-              value={form.description}
-              onChange={(e) => handleChange("description", e.target.value)}
-              rows="4"
-              className="w-full px-4 py-2 border rounded-lg resize-none"
-            />
-
-            <div className="flex gap-3">
-              {["male", "female", "both"].map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => handleChange("section", value)}
-                  className={`px-5 py-2 rounded-lg ${
-                    form.section === value
-                      ? "bg-green-600 text-white"
-                      : "bg-gray-200"
-                  }`}
-                >
-                  {value}
-                </button>
-              ))}
+            <div>
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                {t("title")} <span className="text-red-600 text-lg">*</span>
+              </label>
+              <input
+                value={form.title}
+                onChange={(e) => handleChange("title", e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg"
+                required
+              />
             </div>
 
-            <input
-              type="number"
-              value={form.price}
-              onChange={(e) => handleChange("price", Number(e.target.value))}
-              className="w-full px-4 py-2 border rounded-lg"
-              required
-            />
+            <div>
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                {t("description")}
+              </label>
+              <textarea
+                value={form.description}
+                onChange={(e) => handleChange("description", e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg resize-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t("section")} <span className="text-red-600 text-lg">*</span>
+              </label>
+              <div className="flex gap-3">
+                {[t("male"), t("female"), t("both")].map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => handleChange("section", value)}
+                    className={`px-5 py-2 rounded-lg ${
+                      form.section === value
+                        ? "bg-green-600 text-white"
+                        : "bg-gray-200"
+                    }`}
+                  >
+                    {value}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="price"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                {t("price")} <span className="text-red-600 text-lg">*</span>
+              </label>
+              <input
+                type="number"
+                value={form.price}
+                onChange={(e) => handleChange("price", Number(e.target.value))}
+                className="w-full px-4 py-2 border rounded-lg"
+                required
+              />
+            </div>
 
             <ContactSection
               whatsapp={form.whatsapp}
@@ -189,7 +218,7 @@ export default function EditPage() {
               ) : (
                 <>
                   <Save size={18} className="mr-2" />
-                  Save Changes
+                  {t("saveChanges")}
                 </>
               )}
             </button>

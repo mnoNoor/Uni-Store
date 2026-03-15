@@ -24,8 +24,8 @@ export default function Header() {
             </div>
           </Link>
           <div className="flex items-center space-x-3">
-            <LanguageSwitcher />
             <UserIcon />
+            <LanguageSwitcher />
           </div>
         </div>
       </div>

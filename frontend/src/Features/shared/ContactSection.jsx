@@ -1,13 +1,16 @@
 import { MessageCircle, Send } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function ContactSection({ whatsapp, telegram, onChange }) {
+  const { t } = useTranslation();
+
   return (
     <div className="bg-gray-50 rounded-lg p-4 space-y-4">
-      <h3 className="font-semibold text-gray-700">Contact Information</h3>
+      <h3 className="font-semibold text-gray-700">{t("contactInformation")}</h3>
 
       <div className="space-y-2">
         <label className="block text-sm font-semibold text-gray-700">
-          WhatsApp Number
+          {t("whatsAppLabel")}
         </label>
 
         <div className="relative">
@@ -29,7 +32,7 @@ export default function ContactSection({ whatsapp, telegram, onChange }) {
 
       <div className="space-y-2">
         <label className="block text-sm font-semibold text-gray-700">
-          Telegram Username
+          {t("telegramLabel")}
         </label>
 
         <div className="relative">

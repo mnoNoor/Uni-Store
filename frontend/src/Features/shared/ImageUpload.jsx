@@ -1,8 +1,10 @@
 import { useRef } from "react";
 import toast from "react-hot-toast";
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function ImageUpload({ image, setImage }) {
+  const { t } = useTranslation();
   const inputRef = useRef();
 
   const handleChange = (e) => {
@@ -10,12 +12,12 @@ export default function ImageUpload({ image, setImage }) {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select a valid image file");
+      toast.error(t("invalidImageFile"));
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image size should be less than 5MB");
+      toast.error(t("imageSizeExceeded"));
       return;
     }
 
@@ -35,7 +37,7 @@ export default function ImageUpload({ image, setImage }) {
   return (
     <div>
       <label className="block text-sm font-semibold mb-2">
-        Book Image <span className="text-red-600 text-lg">*</span>
+        {t("image")} <span className="text-red-600 text-lg">*</span>
       </label>
 
       <div className="border-2 border-dashed rounded-lg p-4 hover:border-green-500 transition">
@@ -55,9 +57,7 @@ export default function ImageUpload({ image, setImage }) {
             </button>
           </div>
         ) : (
-          <p className="text-center text-gray-500">
-            Click to upload or drag & drop
-          </p>
+          <p className="text-center text-gray-500">{t("drag&drop")}</p>
         )}
 
         <input

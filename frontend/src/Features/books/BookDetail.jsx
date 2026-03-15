@@ -6,11 +6,14 @@ import {
   ChatBubbleLeftRightIcon,
   PaperAirplaneIcon,
 } from "@heroicons/react/24/solid";
+import { useTranslation } from "react-i18next";
 
 export default function BookDetails() {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -47,12 +50,12 @@ export default function BookDetails() {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <main className="flex-1 container mx-auto px-4 py-16 text-center">
-          <p className="text-gray-600">Book not found</p>
+          <p className="text-gray-600">{t("bookNotFound")}</p>
           <Link
             to="/"
             className="text-green-600 hover:underline mt-4 inline-block"
           >
-            Back to home
+            {t("backHome")}
           </Link>
         </main>
       </div>
@@ -67,7 +70,7 @@ export default function BookDetails() {
           className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-6"
         >
           <ArrowLeftIcon className="h-4 w-4 mr-1" />
-          Back to home
+          {t("backHome")}
         </Link>
 
         <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
@@ -95,7 +98,7 @@ export default function BookDetails() {
 
               <div className="mt-auto">
                 <p className="text-3xl font-bold text-green-600 mb-4">
-                  ${book.price}
+                  ⃁{book.price}
                 </p>
 
                 {book.whatsapp && book.whatsapp !== 0 && (
@@ -106,7 +109,7 @@ export default function BookDetails() {
                     className="flex items-center justify-center gap-2 w-full py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition mb-3"
                   >
                     <ChatBubbleLeftRightIcon className="h-5 w-5" />
-                    Contact on WhatsApp
+                    {t("contactOnWhatsApp")}
                   </a>
                 )}
 
@@ -118,7 +121,7 @@ export default function BookDetails() {
                     className="flex items-center justify-center gap-2 w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition"
                   >
                     <PaperAirplaneIcon className="h-5 w-5" />
-                    Contact on Telegram
+                    {t("contactOnTelegram")}
                   </a>
                 )}
               </div>

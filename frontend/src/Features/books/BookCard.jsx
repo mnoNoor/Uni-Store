@@ -44,6 +44,7 @@ export default function BookCard({ book, setBooks, currentUserId }) {
           <img
             src={book.image || "/placeholder.png"}
             alt={book.title}
+            loading="lazy"
             className="w-full h-full object-contain absolute inset-0"
           />
         </div>

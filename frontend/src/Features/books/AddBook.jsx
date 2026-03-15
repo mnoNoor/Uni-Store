@@ -8,9 +8,11 @@ import toast from "react-hot-toast";
 import instance from "../../lib/axios";
 import RateLimitedUI from "../shared/RateLimitedUI";
 import ImageUpload from "../shared/ImageUpload";
+import { useTranslation } from "react-i18next";
 
 export default function AddBook() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [form, setForm] = useState({
     title: "",
@@ -25,7 +27,7 @@ export default function AddBook() {
   const [loading, setLoading] = useState(false);
   const [isRateLimited, setIsRateLimited] = useState(false);
 
-  const sections = ["male", "female", "both"];
+  const sections = [t("male"), t("female"), t("both")];
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -90,19 +92,16 @@ export default function AddBook() {
           className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6"
         >
           <ArrowLeftIcon className="w-5 h-5 mr-2" />
-          Back to Home
+          {t("backHome")}
         </Link>
 
         <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">
-            Add New Book
+            {t("addNewBook")}
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Book Image
-              </label>
               <ImageUpload image={image} setImage={setImage} />
             </div>
 
@@ -111,12 +110,12 @@ export default function AddBook() {
                 htmlFor="title"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Book Title <span className="text-red-600 text-lg">*</span>
+                {t("title")} <span className="text-red-600 text-lg">*</span>
               </label>
               <input
                 id="title"
                 name="title"
-                placeholder="Enter book title"
+                placeholder={t("titlePlaceholder")}
                 value={form.title}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -129,12 +128,13 @@ export default function AddBook() {
                 htmlFor="description"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Description <span className="text-red-600 text-lg">*</span>
+                {t("description")}{" "}
+                <span className="text-red-600 text-lg">*</span>
               </label>
               <textarea
                 id="description"
                 name="description"
-                placeholder="Enter book description"
+                placeholder={t("descriptionPlaceholder")}
                 value={form.description}
                 onChange={handleChange}
                 rows="4"
@@ -145,7 +145,7 @@ export default function AddBook() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Section <span className="text-red-600 text-lg">*</span>
+                {t("section")} <span className="text-red-600 text-lg">*</span>
               </label>
               <div className="flex gap-3">
                 {sections.map((value) => (
@@ -170,13 +170,13 @@ export default function AddBook() {
                 htmlFor="price"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Price <span className="text-red-600 text-lg">*</span>
+                {t("price")} <span className="text-red-600 text-lg">*</span>
               </label>
               <input
                 id="price"
                 type="number"
                 name="price"
-                placeholder="Enter price"
+                placeholder={t("pricePlaceholder")}
                 value={form.price}
                 onChange={handleChange}
                 min="0"
@@ -204,10 +204,10 @@ export default function AddBook() {
               {loading ? (
                 <div className="flex justify-center items-center">
                   <Loader className="animate-spin mr-2" size={18} />
-                  Adding...
+                  {t("adding")}
                 </div>
               ) : (
-                "Add Book"
+                t("addBook")
               )}
             </button>
           </form>

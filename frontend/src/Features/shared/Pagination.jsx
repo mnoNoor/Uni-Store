@@ -1,4 +1,7 @@
+import { useTranslation } from "react-i18next";
+
 export default function Pagination({ page, totalPages, setPage }) {
+  const { t } = useTranslation();
   if (totalPages <= 1) return null;
 
   const handlePrev = () => {
@@ -16,11 +19,11 @@ export default function Pagination({ page, totalPages, setPage }) {
         disabled={page === 1}
         className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        Prev
+        {t("prev")}
       </button>
 
       <span className="text-sm font-medium text-gray-700">
-        Page {page} of {totalPages}
+        {t("Page")} {page} {t("of")} {totalPages}
       </span>
 
       <button
@@ -28,7 +31,7 @@ export default function Pagination({ page, totalPages, setPage }) {
         disabled={page === totalPages}
         className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        Next
+        {t("next")}
       </button>
     </div>
   );

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BookOpen, Loader } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import BookCard from "../books/BookCard";
 import instance from "../../lib/axios";
@@ -9,6 +10,8 @@ export default function UserBooks() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchUserBooks = async () => {
@@ -32,7 +35,7 @@ export default function UserBooks() {
     return (
       <div className="flex flex-col items-center justify-center py-12">
         <Loader className="animate-spin text-indigo-600 mb-3" size={32} />
-        <p className="text-gray-600">Loading your books...</p>
+        <p className="text-gray-600">{t("loadingYourBooks")}</p>
       </div>
     );
   }
@@ -40,12 +43,12 @@ export default function UserBooks() {
   if (error) {
     return (
       <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-        <p className="text-red-600 mb-3">{error}</p>
+        <p className="text-red-600 mb-3">{t("fetchFailed")}</p>
         <button
           onClick={() => window.location.reload()}
           className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition text-sm"
         >
-          Try Again
+          {t("tryAgain")}
         </button>
       </div>
     );
@@ -56,16 +59,14 @@ export default function UserBooks() {
       <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
         <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
         <h3 className="text-xl font-semibold text-gray-700 mb-2">
-          No Books Yet
+          {t("noBooksYet")}
         </h3>
-        <p className="text-gray-500 mb-6">
-          You haven't added any books to your collection.
-        </p>
+        <p className="text-gray-500 mb-6">{t("noBooksInCollection")}</p>
         <Link
           to="/add-book"
           className="inline-block bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition"
         >
-          Add Your First Book
+          {t("addYourFirstBook")}
         </Link>
       </div>
     );
@@ -75,13 +76,13 @@ export default function UserBooks() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold text-gray-800">
-          Your Books ({books.length})
+          {t("yourBooks")} ({books.length})
         </h2>
         <Link
           to="/add-book"
           className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition text-sm flex items-center gap-1"
         >
-          <span>+</span> Add New
+          <span>+</span> {t("addNew")}
         </Link>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
