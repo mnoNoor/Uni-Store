@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Lock, Mail, Loader } from "lucide-react";
 import { useAuthStore } from "../../stores/authStore";
+import { useTranslation } from "react-i18next";
 
 export default function LogIn() {
   const [email, setEmail] = useState("");
@@ -10,6 +11,7 @@ export default function LogIn() {
   const { login, error, isLoading } = useAuthStore();
 
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -28,13 +30,13 @@ export default function LogIn() {
       <div className="max-w-md mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-md p-6">
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-            Welcome Back
+            {t("logIn")}
           </h1>
 
           <form onSubmit={submitHandler} className="space-y-5">
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700">
-                Email Address
+                {t("email")}
               </label>
               <div className="relative">
                 <Mail
@@ -45,7 +47,7 @@ export default function LogIn() {
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   type="email"
                   name="email"
-                  placeholder="you@example.com"
+                  placeholder="you@gmail.com"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -55,7 +57,7 @@ export default function LogIn() {
 
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700">
-                Password
+                {t("password")}
               </label>
               <div className="relative">
                 <Lock
@@ -86,7 +88,7 @@ export default function LogIn() {
                 href="/forgot-password"
                 className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
               >
-                Forgot password?
+                {t("forgotPassword")}
               </a>
             </div>
           */}
@@ -103,21 +105,21 @@ export default function LogIn() {
               {isLoading ? (
                 <>
                   <Loader className="animate-spin mr-2" size={18} />
-                  Logging in...
+                  {t("loggingIn")}
                 </>
               ) : (
-                "Log In"
+                t("logIn")
               )}
             </button>
 
             <div className="text-center mt-4 pt-4 border-t border-gray-200">
               <span className="text-sm text-gray-600">
-                Don't have an account?{" "}
+                {t("dontHaveAccount")}{" "}
                 <a
                   href="/signup"
                   className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
                 >
-                  Sign up here
+                  {t("signUpHere")}
                 </a>
               </span>
             </div>

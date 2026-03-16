@@ -5,9 +5,11 @@ import { useState, useEffect } from "react";
 import UserBooks from "./UserBooks";
 import { Loader, LogOut, Edit, Calendar, Mail } from "lucide-react";
 import { useAuthStore } from "../../stores/authStore";
+import { useTranslation } from "react-i18next";
 
 export default function UserPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const user = useAuthStore((state) => state.user);
   const isLoading = useAuthStore((state) => state.isLoading);
@@ -46,10 +48,10 @@ export default function UserPage() {
     setLoggingOut(true);
     try {
       await logout();
-      toast.success("Logged out successfully");
+      toast.success(t("loggedOutSuccessfully"));
       navigate("/");
     } catch {
-      toast.error("Failed to logout");
+      toast.error(t("failedToLogout"));
       setLoggingOut(false);
     }
   };
@@ -82,7 +84,7 @@ export default function UserPage() {
               <div className="flex items-center text-gray-500 text-sm mb-4">
                 <Calendar size={14} className="mr-1" />
                 <span>
-                  Joined {new Date(user.createdAt).toLocaleDateString()}
+                  {t("joined")} {new Date(user.createdAt).toLocaleDateString()}
                 </span>
               </div>
 
@@ -92,7 +94,7 @@ export default function UserPage() {
                   className="flex items-center gap-1 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
                 >
                   <Edit size={16} />
-                  Edit
+                  {t("editProfile")}
                 </button>
 
                 <button
@@ -105,7 +107,7 @@ export default function UserPage() {
                   ) : (
                     <>
                       <LogOut size={16} />
-                      Logout
+                      {t("logout")}
                     </>
                   )}
                 </button>
@@ -114,7 +116,9 @@ export default function UserPage() {
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">My Books</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-4">
+              {t("myBooks")}
+            </h2>
             <UserBooks />
           </div>
         </div>

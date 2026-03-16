@@ -4,12 +4,15 @@ import { useNavigate, Link } from "react-router-dom";
 import { Loader } from "lucide-react";
 import { useAuthStore } from "../../stores/authStore";
 import { User, Mail, Lock, AlertCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUserName] = useState("");
   const { signup, isLoading, error } = useAuthStore();
+
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {
@@ -37,13 +40,13 @@ export default function SignUp() {
 
         <div className="bg-white rounded-lg shadow-md p-6">
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-            Create Account
+            {t("createAccount")}
           </h1>
 
           <form onSubmit={submitHandler} className="space-y-5">
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700">
-                Username
+                {t("username")}
               </label>
               <div className="relative">
                 <User
@@ -64,7 +67,7 @@ export default function SignUp() {
 
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700">
-                Email Address
+                {t("email")}
               </label>
               <div className="relative">
                 <Mail
@@ -75,7 +78,7 @@ export default function SignUp() {
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   type="email"
                   name="email"
-                  placeholder="you@example.com"
+                  placeholder="you@gmail.com"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -85,7 +88,7 @@ export default function SignUp() {
 
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700">
-                Password
+                {t("password")}
               </label>
               <div className="relative">
                 <Lock
@@ -122,7 +125,7 @@ export default function SignUp() {
                   />
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Use at least 8 characters
+                  {t("passwordStrength")}
                 </p>
               </div>
             </div>
@@ -142,19 +145,19 @@ export default function SignUp() {
                 className="mt-1 mr-2"
               />
               <label htmlFor="terms" className="text-sm text-gray-600">
-                I agree to the{" "}
+                {t("iAgreeToThe")}{" "}
                 <a
                   href="/terms"
                   className="text-blue-600 hover:text-blue-800 hover:underline"
                 >
-                  Terms of Service
+                  {t("termsOfService")}
                 </a>{" "}
-                and{" "}
+                {t("and")}{" "}
                 <a
                   href="/privacy"
                   className="text-blue-600 hover:text-blue-800 hover:underline"
                 >
-                  Privacy Policy
+                  {t("privacyPolicy")}
                 </a>
               </label>
             </div>
@@ -171,21 +174,21 @@ export default function SignUp() {
               {isLoading ? (
                 <>
                   <Loader className="animate-spin mr-2" size={18} />
-                  Creating account...
+                  {t("signingUp")}
                 </>
               ) : (
-                "Sign Up"
+                t("signUp")
               )}
             </button>
 
             <div className="text-center mt-4 pt-4 border-t border-gray-200">
               <p className="text-sm text-gray-600">
-                Already have an account?{" "}
+                {t("alreadyHaveAccount")}{" "}
                 <Link
                   to="/login"
                   className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
                 >
-                  Log in here
+                  {t("logInHere")}
                 </Link>
               </p>
             </div>
