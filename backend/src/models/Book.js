@@ -13,6 +13,11 @@ const bookSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    publisher: {
+      type: String,
+      trim: true,
+      index: true,
+    },
     image: {
       type: String,
       required: true,

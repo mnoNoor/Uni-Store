@@ -66,6 +66,7 @@ PORT=5000
 NODE_ENV=development
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_super_secret_key
+SUPERADMIN_EMAIL=your@email.com
 CLOUD_NAME=your_cloudinary_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_SECRET=your_api_secret

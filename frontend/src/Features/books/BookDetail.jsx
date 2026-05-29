@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import instance from "../../lib/axios";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
@@ -6,22 +6,29 @@ import {
   ChatBubbleLeftRightIcon,
   PaperAirplaneIcon,
 } from "@heroicons/react/24/solid";
+import { Tag, Loader } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useAuthStore } from "../../stores/authStore";
+import { getUserId } from "../../lib/userId";
+import toast from "react-hot-toast";
 
 export default function BookDetails() {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [markingSold, setMarkingSold] = useState(false);
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const { t } = useTranslation();
+  const user = useAuthStore((s) => s.user);
+  const userId = getUserId(user);
 
   useEffect(() => {
     const fetchBook = async () => {
       try {
         const response = await instance.get(`/books/${id}`);
         setBook(response.data);
-      } catch (error) {
-        console.error("Error fetching book details:", error);
+      } catch {
+        setBook(null);
       } finally {
         setLoading(false);
       }
@@ -29,106 +36,144 @@ export default function BookDetails() {
     fetchBook();
   }, [id]);
 
+  const ownerId = book ? String(book.owner?._id || book.owner) : null;
+  const isOwner = userId && ownerId === userId;
+
+  const handleMarkSold = async () => {
+    setMarkingSold(true);
+    try {
+      const res = await instance.patch(`/books/${id}/sold`);
+      setBook(res.data);
+      toast.success(t("markedAsSold"));
+    } catch {
+      toast.error(t("errorMarkingSold"));
+    } finally {
+      setMarkingSold(false);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <main className="flex-1 container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto bg-white rounded-xl p-8">
-            <div className="animate-pulse">
-              <div className="h-64 bg-gray-200 rounded mb-6" />
-              <div className="h-6 bg-gray-200 rounded w-2/3 mb-4" />
-              <div className="h-4 bg-gray-200 rounded w-full mb-2" />
-              <div className="h-4 bg-gray-200 rounded w-5/6" />
-            </div>
-          </div>
-        </main>
+      <div className="flex-1 flex items-center justify-center py-24">
+        <Loader className="animate-spin text-emerald-600" size={36} />
       </div>
     );
   }
 
   if (!book) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <main className="flex-1 container mx-auto px-4 py-16 text-center">
-          <p className="text-gray-600">{t("bookNotFound")}</p>
-          <Link
-            to="/"
-            className="text-green-600 hover:underline mt-4 inline-block"
-          >
-            {t("backHome")}
-          </Link>
-        </main>
+      <div className="flex-1 container mx-auto px-4 py-16 text-center">
+        <p className="text-slate-600">{t("bookNotFound")}</p>
+        <Link to="/" className="text-emerald-600 hover:underline mt-4 inline-block">
+          {t("backHome")}
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <Link
-          to="/"
-          className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-6"
-        >
-          <ArrowLeftIcon className="h-4 w-4 mr-1" />
-          {t("backHome")}
-        </Link>
+    <div className="flex-1 container mx-auto px-4 py-8">
+      <Link
+        to="/"
+        className="inline-flex items-center text-sm text-slate-600 hover:text-slate-900 mb-6"
+      >
+        <ArrowLeftIcon className="h-4 w-4 me-1" />
+        {t("backHome")}
+      </Link>
 
-        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-            <div>
-              <img
-                src={book.image}
-                alt={book.title}
-                className="w-full rounded-lg shadow-md"
-              />
-            </div>
-
-            <div className="flex flex-col h-full">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                  {book.title}
-                </h1>
-
-                <span className="inline-block px-3 py-1 text-sm bg-green-100 text-green-700 rounded-full mb-4">
-                  {book.section}
+      <div className="max-w-5xl mx-auto glass-card rounded-2xl shadow-lg overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 sm:p-8">
+          <div className="relative">
+            <img
+              src={book.image}
+              alt={book.title}
+              className={`w-full rounded-xl shadow-md ${book.sold ? "opacity-70" : ""}`}
+            />
+            {book.sold && (
+              <div className="absolute top-4 start-4">
+                <span className="bg-red-600 text-white text-sm font-bold px-4 py-2 rounded-lg shadow">
+                  {t("soldBadge")}
                 </span>
-
-                <p className="text-gray-600 mb-6">{book.description}</p>
               </div>
+            )}
+          </div>
 
-              <div className="mt-auto">
-                <p className="text-3xl font-bold text-green-600 mb-4">
-                  ⃁{book.price}
-                </p>
+          <div className="flex flex-col">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
+              {book.title}
+            </h1>
 
-                {book.whatsapp && book.whatsapp !== 0 && (
+            {book.publisher && (
+              <Link
+                to={`/publisher/${encodeURIComponent(book.publisher)}`}
+                className="inline-flex items-center gap-2 text-emerald-600 hover:underline mb-3 font-medium"
+              >
+                <Tag className="w-4 h-4" />
+                {t("viewPublisherBooks", { name: book.publisher })}
+              </Link>
+            )}
+
+            <span className="inline-block w-fit px-3 py-1 text-sm bg-emerald-50 text-emerald-700 rounded-full mb-4">
+              {t(
+                { male: "sectionMale", female: "sectionFemale", both: "sectionBoth" }[
+                  book.section
+                ] || "section",
+              )}
+            </span>
+
+            <p className="text-slate-600 mb-6 leading-relaxed">{book.description}</p>
+
+            <p className="text-3xl font-bold text-emerald-600 mb-6">⃁{book.price}</p>
+
+            {!book.sold && (
+              <div className="space-y-3 mt-auto">
+                {book.whatsapp && book.whatsapp !== "0" && (
                   <a
                     href={`https://wa.me/${book.whatsapp}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition mb-3"
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition"
                   >
                     <ChatBubbleLeftRightIcon className="h-5 w-5" />
                     {t("contactOnWhatsApp")}
                   </a>
                 )}
-
                 {book.telegram && (
                   <a
                     href={`https://t.me/${book.telegram.replace("@", "")}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition"
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-sky-500 hover:bg-sky-600 text-white font-semibold rounded-xl transition"
                   >
                     <PaperAirplaneIcon className="h-5 w-5" />
                     {t("contactOnTelegram")}
                   </a>
                 )}
               </div>
-            </div>
+            )}
+
+            {isOwner && !book.sold && (
+              <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t">
+                <button
+                  type="button"
+                  onClick={handleMarkSold}
+                  disabled={markingSold}
+                  className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold disabled:opacity-50"
+                >
+                  {markingSold ? t("updating") : t("markAsSold")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate(`/edit/${book._id}`)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50"
+                >
+                  {t("edit")}
+                </button>
+              </div>
+            )}
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import booksRoutes from "./routes/booksRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 import rateLimit from "./middlewares/rateLimiter.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { connectDB } from "./config/db.js";
@@ -41,6 +42,7 @@ app.use(express.json());
 app.use(rateLimit);
 app.use("/api/books", booksRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));

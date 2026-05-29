@@ -1,27 +1,25 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
-import { generateTokenAndSetCookie } from "../utils/setCookie.js";
+import {
+  generateTokenAndSetCookie,
+  clearAuthCookie,
+} from "../utils/setCookie.js";
+import { serializeUser } from "../utils/serializeUser.js";
 
 export async function signup(req, res) {
   const { username, email, password } = req.body;
 
-  if (!username?.trim() || !email?.trim() || !password?.trim()) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
-
-  const userExists = await User.findOne({ $or: [{ email }, { username }] });
+  const userExists = await User.findOne({
+    $or: [{ email: email.toLowerCase() }, { username }],
+  });
   if (userExists) {
     return res.status(409).json({ message: "User already exists" });
   }
 
-  const verifyToken = Math.floor(100000 + Math.random() * 900000).toString();
-
   const user = new User({
     username: username.trim(),
     email: email.trim().toLowerCase(),
-    password: password.trim(),
-    verifyToken,
-    verifyTokenExp: Date.now() + 60 * 60 * 24 * 1000, // 24 hours
+    password,
   });
 
   await user.save();
@@ -30,33 +28,25 @@ export async function signup(req, res) {
 
   res.status(201).json({
     message: "User registered successfully",
-    user: {
-      id: user._id,
-      username: user.username,
-      email: user.email,
-    },
+    user: serializeUser(user),
   });
 }
 
 export async function login(req, res) {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email and password are required" });
-  }
-
   const user = await User.findOne({ email: email.toLowerCase() }).select(
     "+password",
   );
 
   if (!user) {
-    return res.status(401).json({ message: "Account not found" });
+    return res.status(401).json({ message: "Invalid email or password" });
   }
 
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
   if (!isPasswordCorrect) {
-    return res.status(401).json({ message: "Password is incorrect" });
+    return res.status(401).json({ message: "Invalid email or password" });
   }
 
   generateTokenAndSetCookie(res, user._id);
@@ -64,16 +54,14 @@ export async function login(req, res) {
   user.lastLogin = new Date();
   await user.save();
 
-  user.password = undefined;
-
   res.status(200).json({
     message: "User logged in successfully",
-    user,
+    user: serializeUser(user),
   });
 }
 
 export async function logout(req, res) {
-  await res.clearCookie("token");
+  clearAuthCookie(res);
   res.status(200).json({ message: "User logged out successfully" });
 }
 
@@ -82,5 +70,49 @@ export async function userAuth(req, res) {
 
   if (!user) return res.status(401).json({ message: "User not found" });
 
-  res.status(200).json({ user });
+  res.status(200).json({ user: serializeUser(user) });
+}
+
+export async function updateProfile(req, res) {
+  const user = await User.findById(req.userId);
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  const { username, email, currentPassword, newPassword } = req.body;
+
+  if (username && username !== user.username) {
+    const taken = await User.findOne({ username });
+    if (taken) {
+      return res.status(409).json({ message: "Username already taken" });
+    }
+    user.username = username.trim();
+  }
+
+  if (email && email.toLowerCase() !== user.email) {
+    const taken = await User.findOne({ email: email.toLowerCase() });
+    if (taken) {
+      return res.status(409).json({ message: "Email already in use" });
+    }
+    user.email = email.toLowerCase().trim();
+  }
+
+  if (newPassword) {
+    if (!currentPassword) {
+      return res
+        .status(400)
+        .json({ message: "Current password is required to set a new password" });
+    }
+    const userWithPwd = await User.findById(req.userId).select("+password");
+    const valid = await bcrypt.compare(currentPassword, userWithPwd.password);
+    if (!valid) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+    user.password = newPassword;
+  }
+
+  await user.save();
+
+  res.status(200).json({
+    message: "Profile updated",
+    user: serializeUser(user),
+  });
 }

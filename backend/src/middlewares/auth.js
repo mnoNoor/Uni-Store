@@ -13,8 +13,7 @@ export const authMiddleware = (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized - invalid token" });
     req.userId = decoded.userId;
     next();
-  } catch (error) {
-    console.log("Error in authMiddleware", error);
-    return res.status(500).json({ message: "Internal server error" });
+  } catch {
+    return res.status(401).json({ message: "Unauthorized - invalid or expired token" });
   }
 };

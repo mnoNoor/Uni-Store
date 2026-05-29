@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-export default function ImageUpload({ image, setImage }) {
+export default function ImageUpload({ image, setImage, existingUrl }) {
   const { t } = useTranslation();
   const inputRef = useRef();
 
@@ -41,10 +41,10 @@ export default function ImageUpload({ image, setImage }) {
       </label>
 
       <div className="border-2 border-dashed rounded-lg p-4 hover:border-green-500 transition">
-        {image?.preview ? (
+        {image?.preview || existingUrl ? (
           <div className="relative">
             <img
-              src={image.preview}
+              src={image?.preview || existingUrl}
               alt="Preview"
               className="max-h-64 mx-auto rounded-lg object-contain"
             />

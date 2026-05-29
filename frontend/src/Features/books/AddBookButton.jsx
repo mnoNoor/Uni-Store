@@ -23,7 +23,7 @@ export default function AddBookButton() {
       onClick={handleClick}
       aria-label="Add book"
       title="Add Book"
-      className="fixed right-6 bottom-6 z-50 bg-green-600 hover:bg-green-700 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transform hover:-translate-y-1 transition"
+      className="fixed end-6 bottom-6 z-50 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl w-14 h-14 flex items-center justify-center shadow-xl shadow-emerald-600/30 hover:-translate-y-1 transition"
     >
       <span className="text-2xl font-bold">+</span>
     </button>
