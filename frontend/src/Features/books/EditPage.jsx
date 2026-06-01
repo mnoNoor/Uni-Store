@@ -14,7 +14,6 @@ import { useAuthStore } from "../../stores/authStore";
 
 const BOOK_FIELDS = [
   "title",
-  "publisher",
   "description",
   "section",
   "price",
@@ -117,7 +116,10 @@ function EditBookForm() {
   return (
     <div className="flex-1 container mx-auto px-4 py-8 max-w-2xl">
       <div className="flex justify-between items-center mb-6">
-        <Link to="/" className="inline-flex items-center text-sm text-slate-600 hover:text-slate-900">
+        <Link
+          to="/"
+          className="inline-flex items-center text-sm text-slate-600 hover:text-slate-900"
+        >
           <ArrowLeftIcon className="h-5 w-5 me-2" />
           {t("backHome")}
         </Link>
@@ -127,7 +129,11 @@ function EditBookForm() {
           disabled={deleting}
           className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 disabled:opacity-50"
         >
-          {deleting ? <Loader className="animate-spin" size={16} /> : <Trash2Icon size={16} />}
+          {deleting ? (
+            <Loader className="animate-spin" size={16} />
+          ) : (
+            <Trash2Icon size={16} />
+          )}
           {t("delete")}
         </button>
       </div>
@@ -143,7 +149,9 @@ function EditBookForm() {
           />
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">{t("title")}</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              {t("title")}
+            </label>
             <input
               value={form.title}
               onChange={(e) => handleChange("title", e.target.value)}
@@ -153,16 +161,9 @@ function EditBookForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">{t("publisher")}</label>
-            <input
-              value={form.publisher || ""}
-              onChange={(e) => handleChange("publisher", e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">{t("description")}</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              {t("description")}
+            </label>
             <textarea
               value={form.description}
               onChange={(e) => handleChange("description", e.target.value)}
@@ -172,12 +173,19 @@ function EditBookForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">{t("section")}</label>
-            <SectionPicker value={form.section} onChange={(v) => handleChange("section", v)} />
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              {t("section")}
+            </label>
+            <SectionPicker
+              value={form.section}
+              onChange={(v) => handleChange("section", v)}
+            />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">{t("price")}</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              {t("price")}
+            </label>
             <input
               type="number"
               value={form.price}
@@ -199,7 +207,11 @@ function EditBookForm() {
             disabled={saving || form.sold}
             className="w-full flex justify-center items-center gap-2 py-3 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700 disabled:opacity-50"
           >
-            {saving ? <Loader className="animate-spin" size={18} /> : <Save size={18} />}
+            {saving ? (
+              <Loader className="animate-spin" size={18} />
+            ) : (
+              <Save size={18} />
+            )}
             {saving ? t("updating") : t("saveChanges")}
           </button>
         </form>

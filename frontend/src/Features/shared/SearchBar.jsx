@@ -9,8 +9,6 @@ export default function SearchBar({
   setSortBy,
   section,
   setSection,
-  publisher,
-  setPublisher,
 }) {
   const { t } = useTranslation();
 
@@ -18,11 +16,14 @@ export default function SearchBar({
     <div className="glass-card rounded-2xl p-4 sm:p-5 mb-6 shadow-sm space-y-4">
       <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <label htmlFor="search" className="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label
+            htmlFor="search"
+            className="block text-sm font-semibold text-slate-700 mb-1.5"
+          >
             {t("searchBooks")}
           </label>
           <div className="relative">
-            <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute inset-s-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               id="search"
               type="search"
@@ -35,7 +36,7 @@ export default function SearchBar({
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1 sm:min-w-[140px]">
+          <div className="flex-1 sm:min-w-35">
             <label htmlFor="sort" className="block text-sm text-slate-600 mb-1">
               {t("sortBy")}
             </label>
@@ -54,19 +55,6 @@ export default function SearchBar({
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label htmlFor="publisher" className="block text-sm font-semibold text-slate-700 mb-1.5">
-            {t("filterByPublisher")}
-          </label>
-          <input
-            id="publisher"
-            type="text"
-            value={publisher}
-            onChange={(e) => setPublisher(e.target.value)}
-            placeholder={t("publisherPlaceholder")}
-            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
-          />
-        </div>
         <div>
           <span className="block text-sm font-semibold text-slate-700 mb-1.5">
             {t("section")}

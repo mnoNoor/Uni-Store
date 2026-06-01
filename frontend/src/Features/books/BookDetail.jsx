@@ -64,7 +64,10 @@ export default function BookDetails() {
     return (
       <div className="flex-1 container mx-auto px-4 py-16 text-center">
         <p className="text-slate-600">{t("bookNotFound")}</p>
-        <Link to="/" className="text-emerald-600 hover:underline mt-4 inline-block">
+        <Link
+          to="/"
+          className="text-emerald-600 hover:underline mt-4 inline-block"
+        >
           {t("backHome")}
         </Link>
       </div>
@@ -90,7 +93,7 @@ export default function BookDetails() {
               className={`w-full rounded-xl shadow-md ${book.sold ? "opacity-70" : ""}`}
             />
             {book.sold && (
-              <div className="absolute top-4 start-4">
+              <div className="absolute top-4 inset-s-4">
                 <span className="bg-red-600 text-white text-sm font-bold px-4 py-2 rounded-lg shadow">
                   {t("soldBadge")}
                 </span>
@@ -103,27 +106,23 @@ export default function BookDetails() {
               {book.title}
             </h1>
 
-            {book.publisher && (
-              <Link
-                to={`/publisher/${encodeURIComponent(book.publisher)}`}
-                className="inline-flex items-center gap-2 text-emerald-600 hover:underline mb-3 font-medium"
-              >
-                <Tag className="w-4 h-4" />
-                {t("viewPublisherBooks", { name: book.publisher })}
-              </Link>
-            )}
-
             <span className="inline-block w-fit px-3 py-1 text-sm bg-emerald-50 text-emerald-700 rounded-full mb-4">
               {t(
-                { male: "sectionMale", female: "sectionFemale", both: "sectionBoth" }[
-                  book.section
-                ] || "section",
+                {
+                  male: "sectionMale",
+                  female: "sectionFemale",
+                  both: "sectionBoth",
+                }[book.section] || "section",
               )}
             </span>
 
-            <p className="text-slate-600 mb-6 leading-relaxed">{book.description}</p>
+            <p className="text-slate-600 mb-6 leading-relaxed">
+              {book.description}
+            </p>
 
-            <p className="text-3xl font-bold text-emerald-600 mb-6">⃁{book.price}</p>
+            <p className="text-3xl font-bold text-emerald-600 mb-6">
+              ⃁{book.price}
+            </p>
 
             {!book.sold && (
               <div className="space-y-3 mt-auto">

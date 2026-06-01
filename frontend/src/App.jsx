@@ -17,7 +17,6 @@ import UserPage from "./Features/user/UserPage";
 import EditProfile from "./Features/user/EditProfile";
 import ContactUs from "./Features/pages/ContactUs";
 import About from "./Features/pages/About";
-import PublisherPage from "./Features/pages/PublisherPage";
 import AdminDashboard from "./Features/admin/AdminDashboard";
 
 function App() {
@@ -39,7 +38,6 @@ function App() {
             <Route path="/add-book" element={<AddBook />} />
             <Route path="/books/:id" element={<BookDetails />} />
             <Route path="/edit/:id" element={<EditPage />} />
-            <Route path="/publisher/:publisher" element={<PublisherPage />} />
             <Route path="/user" element={<UserPage />} />
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/admin" element={<AdminDashboard />} />

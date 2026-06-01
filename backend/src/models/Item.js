@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const bookSchema = new mongoose.Schema(
+const itemSchema = new mongoose.Schema(
   {
     owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -8,29 +8,28 @@ const bookSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    image: {
+    imageUrl: {
       type: String,
       required: true,
     },
     imagePublicId: { type: String },
-    description: {
+    name: {
       type: String,
       required: true,
     },
-    section: {
+    description: {
       type: String,
-      enum: ["male", "female", "both"],
       required: true,
     },
     price: {
       type: Number,
       required: true,
       min: 0,
+    },
+    section: {
+      type: String,
+      enum: ["male", "female", "both"],
+      required: true,
     },
     whatsapp: {
       type: String,
@@ -46,9 +45,9 @@ const bookSchema = new mongoose.Schema(
       index: true,
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+  },
 );
 
-const Book = mongoose.model("Book", bookSchema);
-
-export default Book;
+export default mongoose.model("Item", itemSchema);

@@ -5,7 +5,6 @@ export const validateBookSchema = Joi.object({
   description: Joi.string().min(10).max(2000).required(),
   section: Joi.string().valid("male", "female", "both").required(),
   price: Joi.number().min(0).required(),
-  publisher: Joi.string().trim().min(1).max(80).allow("", null),
   whatsapp: Joi.string().allow("", null),
   telegram: Joi.string().allow("", null),
 }).custom((value, helpers) => {

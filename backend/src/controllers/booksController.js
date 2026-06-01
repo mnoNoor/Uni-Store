@@ -21,7 +21,6 @@ export async function getAllBooks(req, res) {
   const page = parseInt(req.query.page) || 1;
   const limit = Math.min(parseInt(req.query.limit) || 12, 50);
   const search = (req.query.search || "").trim();
-  const publisher = (req.query.publisher || "").trim();
   const sort = req.query.sort || "newest";
   const section = req.query.section;
 
@@ -33,10 +32,6 @@ export async function getAllBooks(req, res) {
     filter.section = section;
   }
 
-  if (publisher) {
-    filter.publisher = { $regex: publisher, $options: "i" };
-  }
-
   if (search) {
     const users = await User.find({
       username: { $regex: search, $options: "i" },
@@ -46,7 +41,6 @@ export async function getAllBooks(req, res) {
     filter.$or = [
       { title: { $regex: search, $options: "i" } },
       { description: { $regex: search, $options: "i" } },
-      { publisher: { $regex: search, $options: "i" } },
       ...(ownerIds.length ? [{ owner: { $in: ownerIds } }] : []),
     ];
   }
@@ -69,61 +63,6 @@ export async function getAllBooks(req, res) {
     totalPages: Math.ceil(total / limit) || 1,
     totalItems: total,
   });
-}
-
-export async function getBooksByPublisher(req, res) {
-  const publisher = decodeURIComponent(req.params.publisher || "").trim();
-  if (!publisher) {
-    return res.status(400).json({ message: "Publisher name is required" });
-  }
-
-  const page = parseInt(req.query.page) || 1;
-  const limit = Math.min(parseInt(req.query.limit) || 12, 50);
-  const skip = (page - 1) * limit;
-
-  const filter = {
-    publisher: { $regex: new RegExp(`^${publisher.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
-    sold: false,
-  };
-
-  const books = await Book.find(filter)
-    .populate(populateOwner)
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit);
-
-  const total = await Book.countDocuments(filter);
-
-  const distinct = await Book.distinct("publisher", {
-    publisher: { $regex: publisher, $options: "i" },
-    sold: false,
-  });
-
-  res.status(200).json({
-    publisher: distinct[0] || publisher,
-    data: books.map(formatBook),
-    currentPage: page,
-    totalPages: Math.ceil(total / limit) || 1,
-    totalItems: total,
-  });
-}
-
-export async function listPublishers(req, res) {
-  const q = (req.query.q || "").trim();
-  const match = { sold: false, publisher: { $exists: true, $ne: "" } };
-  if (q) {
-    match.publisher = { $regex: q, $options: "i" };
-  }
-
-  const publishers = await Book.aggregate([
-    { $match: match },
-    { $group: { _id: "$publisher", count: { $sum: 1 } } },
-    { $sort: { count: -1 } },
-    { $limit: 20 },
-    { $project: { _id: 0, name: "$_id", count: 1 } },
-  ]);
-
-  res.status(200).json(publishers);
 }
 
 export async function getUserBooks(req, res) {
@@ -156,8 +95,7 @@ export async function getOneBook(req, res) {
 }
 
 export async function createBook(req, res) {
-  const { title, description, section, price, whatsapp, telegram, publisher } =
-    req.body;
+  const { title, description, section, price, whatsapp, telegram } = req.body;
 
   if (!whatsapp && !telegram) {
     return res.status(400).json({ message: "Please add a contact way" });
@@ -189,7 +127,6 @@ export async function createBook(req, res) {
   const newBook = new Book({
     owner: req.userId,
     title,
-    publisher: publisher?.trim() || undefined,
     image: uploadResult.secure_url,
     imagePublicId: uploadResult.public_id,
     description,
@@ -219,7 +156,6 @@ export async function editBook(req, res) {
     "price",
     "whatsapp",
     "telegram",
-    "publisher",
   ];
   const toUpdate = {};
   for (const key of allowed) {

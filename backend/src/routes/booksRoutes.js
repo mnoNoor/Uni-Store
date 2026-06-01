@@ -7,8 +7,6 @@ import {
   deleteBook,
   getUserBooks,
   markBookSold,
-  getBooksByPublisher,
-  listPublishers,
 } from "../controllers/booksController.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import upload from "../middlewares/upload.js";
@@ -21,12 +19,8 @@ import { optionalAuth } from "../middlewares/optionalAuth.js";
 const router = express.Router();
 
 router.get("/", asyncHandler(getAllBooks));
-router.get("/publishers/list", asyncHandler(listPublishers));
 router.get("/user/me", authMiddleware, asyncHandler(getUserBooks));
-router.get(
-  "/by-publisher/:publisher",
-  asyncHandler(getBooksByPublisher),
-);
+
 router.get("/:id", optionalAuth, asyncHandler(getOneBook));
 router.post(
   "/",

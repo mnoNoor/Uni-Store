@@ -16,7 +16,6 @@ function AddBookForm() {
 
   const [form, setForm] = useState({
     title: "",
-    publisher: "",
     description: "",
     section: "",
     price: "",
@@ -35,7 +34,13 @@ function AddBookForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!image || !form.title || !form.description || !form.section || !form.price) {
+    if (
+      !image ||
+      !form.title ||
+      !form.description ||
+      !form.section ||
+      !form.price
+    ) {
       toast.error(t("fillRequiredFields"));
       return;
     }
@@ -79,7 +84,9 @@ function AddBookForm() {
       </Link>
 
       <div className="glass-card rounded-2xl p-6 sm:p-8 shadow-sm">
-        <h2 className="text-2xl font-bold text-slate-900 mb-6">{t("addNewBook")}</h2>
+        <h2 className="text-2xl font-bold text-slate-900 mb-6">
+          {t("addNewBook")}
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <ImageUpload image={image} setImage={setImage} />
@@ -95,19 +102,6 @@ function AddBookForm() {
               placeholder={t("titlePlaceholder")}
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500/40"
               required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
-              {t("publisher")}
-            </label>
-            <input
-              name="publisher"
-              value={form.publisher}
-              onChange={handleChange}
-              placeholder={t("publisherPlaceholder")}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500/40"
             />
           </div>
 

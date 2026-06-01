@@ -20,7 +20,6 @@ export default function Home() {
   const [books, setBooks] = useState([]);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
-  const [publisher, setPublisher] = useState("");
   const [section, setSection] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [page, setPage] = useState(1);
@@ -41,7 +40,6 @@ export default function Home() {
           sort: sortBy,
         });
         if (section) params.set("section", section);
-        if (publisher.trim()) params.set("publisher", publisher.trim());
 
         const res = await instance.get(`/books?${params}`);
 
@@ -67,11 +65,11 @@ export default function Home() {
       mounted = false;
       clearTimeout(timer);
     };
-  }, [page, query, sortBy, section, publisher, t]);
+  }, [page, query, sortBy, section, t]);
 
   useEffect(() => {
     setPage(1);
-  }, [query, sortBy, section, publisher]);
+  }, [query, sortBy, section]);
 
   const userId = getUserId(user);
 
@@ -79,7 +77,9 @@ export default function Home() {
     <div className="flex-1">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="mb-6 rounded-2xl hero-gradient text-white p-6 sm:p-8 shadow-lg">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t("heroTitle")}</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2">
+            {t("heroTitle")}
+          </h2>
           <p className="text-emerald-50/95 max-w-2xl">{t("heroSubtitle")}</p>
         </div>
 
@@ -90,8 +90,6 @@ export default function Home() {
           setSortBy={setSortBy}
           section={section}
           setSection={setSection}
-          publisher={publisher}
-          setPublisher={setPublisher}
         />
 
         {loading && (

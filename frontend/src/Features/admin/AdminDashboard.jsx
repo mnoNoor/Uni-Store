@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Loader, Trash2, KeyRound, UserPlus, Users, BookOpen, Package } from "lucide-react";
+import {
+  Loader,
+  Trash2,
+  KeyRound,
+  UserPlus,
+  Users,
+  BookOpen,
+  Package,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import instance from "../../lib/axios";
@@ -98,21 +106,47 @@ function AdminPanel() {
   }
 
   const statCards = [
-    { label: t("statUsers"), value: stats?.usersCount, icon: Users, color: "bg-blue-500" },
-    { label: t("statBooks"), value: stats?.booksCount, icon: BookOpen, color: "bg-emerald-500" },
-    { label: t("statActive"), value: stats?.activeListings, icon: Package, color: "bg-teal-500" },
-    { label: t("statSold"), value: stats?.soldCount, icon: Package, color: "bg-amber-500" },
+    {
+      label: t("statUsers"),
+      value: stats?.usersCount,
+      icon: Users,
+      color: "bg-blue-500",
+    },
+    {
+      label: t("statBooks"),
+      value: stats?.booksCount,
+      icon: BookOpen,
+      color: "bg-emerald-500",
+    },
+    {
+      label: t("statActive"),
+      value: stats?.activeListings,
+      icon: Package,
+      color: "bg-teal-500",
+    },
+    {
+      label: t("statSold"),
+      value: stats?.soldCount,
+      icon: Package,
+      color: "bg-amber-500",
+    },
   ];
 
   return (
     <div className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
-      <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">{t("adminPanel")}</h1>
-      <p className="text-slate-500 mb-8">{t("adminWelcome", { name: user?.username })}</p>
+      <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
+        {t("adminPanel")}
+      </h1>
+      <p className="text-slate-500 mb-8">
+        {t("adminWelcome", { name: user?.username })}
+      </p>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-        {statCards.map(({ label, value, icon: Icon, color }) => (
+        {statCards.map(({ label, value, icon: color }) => (
           <div key={label} className="glass-card rounded-2xl p-5 shadow-sm">
-            <div className={`w-10 h-10 rounded-xl ${color} text-white flex items-center justify-center mb-3`}>
+            <div
+              className={`w-10 h-10 rounded-xl ${color} text-white flex items-center justify-center mb-3`}
+            >
               <Icon className="w-5 h-5" />
             </div>
             <p className="text-2xl font-bold text-slate-900">{value ?? 0}</p>
@@ -127,7 +161,10 @@ function AdminPanel() {
             <UserPlus className="w-5 h-5 text-emerald-600" />
             {t("addAdmin")}
           </h2>
-          <form onSubmit={promoteAdmin} className="flex flex-col sm:flex-row gap-3">
+          <form
+            onSubmit={promoteAdmin}
+            className="flex flex-col sm:flex-row gap-3"
+          >
             <input
               type="email"
               value={promoteEmail}
@@ -232,7 +269,8 @@ function AdminPanel() {
                 <div className="min-w-0">
                   <p className="font-medium truncate">{b.title}</p>
                   <p className="text-xs text-slate-500">
-                    @{b.owner?.username} · {b.sold ? t("soldBadge") : "⃁" + b.price}
+                    @{b.owner?.username} ·{" "}
+                    {b.sold ? t("soldBadge") : "⃁" + b.price}
                   </p>
                 </div>
                 <button
